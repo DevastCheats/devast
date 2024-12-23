@@ -1,4 +1,4 @@
-// source code aimbot 2.9.30
+// Spacebar = on/off aim
 
 function SendWSmsg(message) {
     if (window.ws && window.ws.readyState === WebSocket.OPEN) {
@@ -220,125 +220,6 @@ class LinesCon {
     }
 }
 
-// Создание элементов
-let navBar = document.createElement("div");
-let wrapper = document.createElement("div");
-let chatLog = document.createElement("div");
-let pNumber = document.createElement("div");
-
-// Присвоение классов
-navBar.className = "navBar";
-wrapper.className = "wrapper";
-chatLog.className = "chatLog";
-pNumber.className = "pNumber";
-
-// Установка текстового содержимого
-navBar.innerText = "Chat Log(G)";
-pNumber.innerText = "Players: ";
-
-// Создание стилей
-let style = document.createElement('style');
-style.innerHTML = `
-    .pNumber {
-        width: 200px;
-        height: 30px;
-        display: flex;
-        position: absolute;
-        background-color: rgba(192,192,192,0.3);
-        border-radius: 5px;
-        left: 1553px;
-        top: 380px;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-family: Sans-serif;
-        font-weight: bold;
-    }
-    
-    .navBar {
-        width: 100px;
-        height: 30px;
-        background: black;
-        color: white;
-        font-family: Sans-serif;
-        font-weight: bold;
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        position: relative;
-        border-radius: 5px;
-        left: 70%;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .wrapper {
-        position: absolute;
-        width: 300px;
-        height: 400px;
-        background: black;
-        top: 35px;
-        border-radius: 5px;
-        overflow: hidden;
-        display: none; /* Изначально скрыто */
-        align-items: center;
-        justify-content: center;
-    }
-
-    .wrapper::before {
-        content: '';
-        position: absolute;
-        width: 600px;
-        height: 200px;
-        left: -98px;
-        top: 90px;
-        animation: animate 5s linear infinite;
-        background: linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(217,217,251,1) 56%, rgba(254,254,254,1) 100%);
-    }
-
-    .wrapper::after {
-        content: '';
-        position: absolute;
-        inset: 5px;
-        background-color: black;
-    }
-
-    .chatLog {
-        background: black;
-        width: 300px;
-        height: 390px;
-        border-radius: 5px;
-        position: absolute;
-        z-index: 1;
-        font-family: Ubuntu;
-        font-weight: bold;
-        overflow: auto;
-        display: flex;
-    }
-
-    @keyframes animate {
-        0% {
-            transform: rotate(0deg)
-        } 
-        100% {
-            transform: rotate(360deg)
-        }
-    }
-
-    .hidden {
-        display: none !important;
-    }
-`;
-
-// Добавление стилей и элементов в документ
-document.head.appendChild(style);
-document.body.appendChild(navBar);
-navBar.appendChild(wrapper);
-wrapper.appendChild(chatLog);
-document.body.appendChild(pNumber);
-
-
-
 function AimbotRefresh() {
     if (World.PLAYER.id === 0) {
         if (GetAllTargets.lastId !== 0) {
@@ -439,58 +320,6 @@ window.onload = () => {
     skinchanger.add(MOD, 'changeMyModel');
     const sc = skinchanger.add(MOD, 'myPlayerModel', 0, 14, 1).domElement;
     sc.disabled = true;
-    
-    //-----------------------------------------
-    
-    function sendPacket(NwnNM, socket) {
-        lastActivityTimestamp = previousTimestamp;
-        socket.send(NwnNM);
-    };
-    
-    const customActions = gui.addFolder('Interactive');
-    customActions.open();
-    
-    // Добавление переключателя для показа/скрытия меню
-    const menuSettings = { ShowMenu: true }; // Изначально скрыто
-    var visiblechat = undefined;
-    customActions.add(menuSettings, 'ShowMenu').name('Show Menu').onChange((visible) => {
-        if (visible) {
-            visiblechat = true;
-            navBar.classList.remove("hidden");
-            pNumber.classList.remove("hidden");
-        } else {
-            visiblechat = false;
-            navBar.classList.add("hidden");
-            pNumber.classList.add("hidden");
-        }
-    });
-    
-    // Существующий переключатель Auto Stop
-    const autoStop = customActions.addFolder('Auto Stop');
-    autoStop.open();
-    
-    const autoStopSettings = { Enabled: false };
-    const autoStopInterval = 30000; // 30 секунд
-    let autoStopTimer;
-    
-    autoStop.add(autoStopSettings, 'Enabled').name('Enabled').onChange((enabled) => {
-        if (enabled) {
-            MOD.AimBotEnable = 0; // Сброс при включении
-    
-            // Начать интервал, который проверяет статус enabled каждые 2 секунды
-            autoStopTimer = setInterval(() => {
-                if (autoStopSettings.Enabled) {
-                    MOD.AimBotEnable = 0;
-                    Client.sendPacket('[1,"!stop"]'); // Отправляем пакет
-                } else {
-                    clearInterval(autoStopTimer);
-                }
-            }, 500); // 2000 миллисекунд (2 секунды)
-        } else {
-            clearInterval(autoStopTimer); // Останавливаем интервал, если отключено
-        }
-    });
-
 
     //--------------------------------------
     const tokenchanger = gui.addFolder('Token Changer');
@@ -851,11 +680,11 @@ var CanvasUtils = (function() {
             if (window.innerWidth > window.innerHeight) {
                 aspectRatio = window.innerHeight / window.innerWidth;
                 width = options.size;
-                height = window.Math.floor(width * aspectRatio);
+                height = Math.floor(width * aspectRatio);
             } else {
                 aspectRatio = window.innerWidth / window.innerHeight;
                 height = options.size;
-                width = window.Math.floor(height * aspectRatio);
+                width = Math.floor(height * aspectRatio);
             }
         } else {
             width = window.innerWidth;
@@ -863,10 +692,10 @@ var CanvasUtils = (function() {
         }
         canw = width;
         canh = height;
-        canw2 = window.Math.floor(canw / 2);
-        canh2 = window.Math.floor(canh / 2);
-        canw4 = window.Math.floor(canw / 4);
-        canh4 = window.Math.floor(canh / 4);
+        canw2 = Math.floor(canw / 2);
+        canh2 = Math.floor(canh / 2);
+        canw4 = Math.floor(canw / 4);
+        canh4 = Math.floor(canh / 4);
         options.ratioX = canw / window.innerWidth;
         options.ratioY = canh / window.innerHeight;
         pixelRatio = options.scheduledRatio / options.backingStoreRatio;
@@ -874,7 +703,7 @@ var CanvasUtils = (function() {
         canvas.width = canw * pixelRatio;
         canvas.height = canh * pixelRatio;
         if (options.resizeMethod === __RESIZE_METHOD_SCALE__) {
-            scaleby = window.Math.max(height / ((options.size * 11) / 16), width / options.size);
+            scaleby = Math.max(height / ((options.size * 11) / 16), width / options.size);
             canvas.style.width = width + "px";
             canvas.style.height = height + "px";
         }
@@ -899,7 +728,7 @@ var CanvasUtils = (function() {
         }
         if (!window.requestAnimationFrame) window.requestAnimationFrame = function(callback, element) {
             var currTime = (new window.Date).getTime();
-            var timeToCall = window.Math.max(0, 16 - (currTime - lastTime));
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
             var id = window.setTimeout(function() {
                 callback(currTime + timeToCall);
             }, timeToCall);
@@ -936,7 +765,7 @@ var CanvasUtils = (function() {
                     averageFPS += fpsSamples[i];
                 averageFPS = averageFPS / frameSampleCount;
                 var mnV = options.deviceRatio / options.backingStoreRatio;
-                if (((options.forceResolution === 0) && (mnV === 2)) && (window.Math.abs(fpsAvg - averageFPS) < 5)) {
+                if (((options.forceResolution === 0) && (mnV === 2)) && (Math.abs(fpsAvg - averageFPS) < 5)) {
                     if ((averageFPS < 22) && (fpsAvg < 22)) {
                         if (canvasQuality === 1) {
                             canvasQuality = 2;
@@ -1091,7 +920,7 @@ var CanvasUtils = (function() {
     };
 
     function lerp(p1, p2, w) {
-        var c = window.Math.max(1, window.Math.floor(60 / fpsAvg));
+        var c = Math.max(1, Math.floor(60 / fpsAvg));
         for (var i = 0; i < c; i++)
             p1 = MathUtils.lerp(p1, p2, w);
         return p1;
@@ -1234,13 +1063,13 @@ var Math2d = (function() {
     function angle(x1, y1, x2, y2) {
         var deltaY = y2 - y1;
         var deltaX = x2 - x1;
-        return window.Math.atan2(deltaY, deltaX);
+        return Math.atan2(deltaY, deltaX);
     }
 
     function distance(x1, y1, x2, y2) {
         var diffX = x2 - x1;
         var diffY = y2 - y1;
-        return window.Math.sqrt((diffX * diffX) + (diffY * diffY));
+        return Math.sqrt((diffX * diffX) + (diffY * diffY));
     }
 
     function fastDist(x1, y1, x2, y2) {
@@ -1257,11 +1086,11 @@ var Math2d = (function() {
 })();
 
 var MathUtils = (function() {
-    var PI2 = window.Math.PI * 2;
+    var PI2 = Math.PI * 2;
 
     var Ease = {
         speedLimit: function(t, easingFunction, speed) {
-            return window.Math.min((speed * t) + easingFunction(t), 1);
+            return Math.min((speed * t) + easingFunction(t), 1);
         },
         linear: function(t) {
             return t;
@@ -1308,9 +1137,9 @@ var MathUtils = (function() {
 
     function simplifyNumber(n) {
         if (n >= 10000) {
-            var log = window.Math.floor(window.Math.log10(n)) - 2;
-            var decimal = window.Math.max(0, 3 - log);
-            var V = window.Math.floor(n / 1000).toString();
+            var log = Math.floor(Math.log10(n)) - 2;
+            var decimal = Math.max(0, 3 - log);
+            var V = Math.floor(n / 1000).toString();
             if (decimal) {
                 V += "." + ((n % 1000) / 1000).toString().substring(2).substring(0, decimal);
                 for (var i = V.length - 1, zero_counter = 0; i > 0; i--) {
@@ -1349,7 +1178,7 @@ var MathUtils = (function() {
         newList.push.apply(newList, list);
         var randomArray = [];
         while (newList.length > 0) {
-            var randomIndex = window.Math.floor(randomNumberGenerator() * newList.length);
+            var randomIndex = Math.floor(randomNumberGenerator() * newList.length);
             randomArray.push(newList[randomIndex]);
             newList.splice(randomIndex, 1);
         }
@@ -1357,7 +1186,7 @@ var MathUtils = (function() {
     };
 
     function reduceAngle(angle1, angle2) {
-        return angle2 + (window.Math.round((angle1 - angle2) / PI2) * PI2);
+        return angle2 + (Math.round((angle1 - angle2) / PI2) * PI2);
     };
 
     return {
@@ -1377,10 +1206,10 @@ var Mouse = (function() {
     function updatePosition(event, state) {
         if (state !== Mouse.__MOUSE_MOVE__)
             Mouse.state = state;
-        Mouse.sx = window.Math.floor(event.clientX * CanvasUtils.options.ratioX);
-        Mouse.sy = window.Math.floor(event.clientY * CanvasUtils.options.ratioY);
-        Mouse.x = window.Math.floor(Mouse.sx / scaleby);
-        Mouse.y = window.Math.floor(Mouse.sy / scaleby);
+        Mouse.sx = Math.floor(event.clientX * CanvasUtils.options.ratioX);
+        Mouse.sy = Math.floor(event.clientY * CanvasUtils.options.ratioY);
+        Mouse.x = Math.floor(Mouse.sx / scaleby);
+        Mouse.y = Math.floor(Mouse.sy / scaleby);
     };
 
     function updateAngle() {
@@ -1465,10 +1294,10 @@ var GUI = (function() {
         function draw() {
             if (img.isLoaded !== 1)
                 return;
-            frameCount += window.Math.min(delta, 3 * frameDelay);
+            frameCount += Math.min(delta, 3 * frameDelay);
             if (frameCount > frameDelay) {
                 frameCount -= frameDelay;
-                currentFrame = window.Math.floor((currentFrame + 1) % (img.width / frameDelayCounter));
+                currentFrame = Math.floor((currentFrame + 1) % (img.width / frameDelayCounter));
             }
             ctx.drawImage(img, frameDelayCounter * currentFrame, 0, frameDelayCounter, img.height, pos.x, pos.y, width * scaleby, height * scaleby);
         };
@@ -1608,7 +1437,7 @@ var GUI = (function() {
         ctx.textBaseline = "middle",
             ctx.font = ((((weight !== window.undefined) ? (weight + " ") : '') + height) + "px ") + font;
         if (width !== window.undefined)
-            width = window.Math.min(ctx.measureText(text).width, width);
+            width = Math.min(ctx.measureText(text).width, width);
         else
             width = ctx.measureText(text).width;
         canvas.width = width + paddingHorz;
@@ -1636,10 +1465,10 @@ var GUI = (function() {
             ctx.lineWidth = borderTextWidth;
             ctx.lineJoin = 'miter';
             ctx.miterLimit = 2;
-            ctx.strokeText(text, window.Math.floor(paddingHorz / 2), window.Math.floor(paddingVert / 2) + window.Math.floor(height / 2), width);
+            ctx.strokeText(text, Math.floor(paddingHorz / 2), Math.floor(paddingVert / 2) + Math.floor(height / 2), width);
         }
         ctx.fillStyle = color;
-        ctx.fillText(text, window.Math.floor(paddingHorz / 2), window.Math.floor(paddingVert / 2) + window.Math.floor(height / 2), width);
+        ctx.fillText(text, Math.floor(paddingHorz / 2), Math.floor(paddingVert / 2) + Math.floor(height / 2), width);
         canvas.wh = canvas.width / 2;
         canvas.h2 = canvas.height / 2;
         return canvas;
@@ -1662,7 +1491,7 @@ function onUnits(data, ui8) {
     var ui16 = new window.Uint16Array(data);
 
     /* The amount of object that arrived in one context of units data([18] is one object data(-2 from beggining)) */
-    var len = (ui8.length - 2) / 18;
+    var len = (ui8.length - 2) / 20;
 
     if (ui8[1] === 1)
         Entitie.removeAll();  // First message contains [0, 1 ...] at the beggining.
@@ -1673,8 +1502,8 @@ function onUnits(data, ui8) {
 
         i < len; i++,
 
-        isRef8  += 18,
-        isRef16 += 9
+        isRef8  += 20,
+        isRef16 += 10
 
         ) {
             var entity        = null;
@@ -1684,6 +1513,7 @@ function onUnits(data, ui8) {
             var state       = ui16[isRef16 + 2];
             var id          = ui16[isRef16 + 3];
             var extra       = ui16[isRef16 + 8];
+            var subtype     = ui16[isRef16 + 9];
 
             if (state === 0) { 
                 Entitie.remove(pid, id, uid, type, extra);
@@ -1706,7 +1536,8 @@ function onUnits(data, ui8) {
             ui16[isRef16 + 7], // Position Y
             extra,             // Distinguish look of object
             ui8[isRef8 + 2],   // Rotation
-            state
+            state,
+            subtype
             );
 
             var update = ENTITIES[type].update;
@@ -1955,7 +1786,7 @@ function onPlayerHit(id, angle) {
         if (id === World.PLAYER.id)
             Render.shake = 3;
         player.hurt = 300;
-        player.hurtAngle = ((angle * 2) * window.Math.PI) / 255;
+        player.hurtAngle = ((angle * 2) * Math.PI) / 255;
     }
 };
 
@@ -2065,11 +1896,11 @@ function onStackItem(data) {
     var totalStack = data[2] + data[4];
 
     if (item.stack < totalStack) {
-        inventory[secondIndex][3] = window.Math.min(255, window.Math.max(0, window.Math.floor(((inventory[firstIndex][3] * inventory[firstIndex][1]) + (inventory[secondIndex][3] * (item.stack - inventory[firstIndex][1]))) / item.stack)));
+        inventory[secondIndex][3] = Math.min(255, Math.max(0, Math.floor(((inventory[firstIndex][3] * inventory[firstIndex][1]) + (inventory[secondIndex][3] * (item.stack - inventory[firstIndex][1]))) / item.stack)));
         inventory[firstIndex][1] = totalStack - item.stack;
         inventory[secondIndex][1] = item.stack;
     } else {
-        inventory[secondIndex][3] = window.Math.min(255, window.Math.max(0, window.Math.floor(((inventory[firstIndex][3] * inventory[firstIndex][1]) + (inventory[secondIndex][3] * inventory[secondIndex][1])) / totalStack)));
+        inventory[secondIndex][3] = Math.min(255, Math.max(0, Math.floor(((inventory[firstIndex][3] * inventory[firstIndex][1]) + (inventory[secondIndex][3] * inventory[secondIndex][1])) / totalStack)));
         inventory[firstIndex][0] = 0;
         inventory[firstIndex][1] = 0;
         inventory[firstIndex][2] = 0;
@@ -2083,7 +1914,7 @@ function onStackItem(data) {
 
 function onSplitItem(data) {
     var inventory = World.PLAYER.inventory;
-    var amount = window.Math.floor(data[2] / 2);
+    var amount = Math.floor(data[2] / 2);
     var firstIndex = -1;
     var secondIndex = -1;
 
@@ -2317,20 +2148,20 @@ function onModdedGaugesValues(data) {
     World.gauges.rad.speedInc       = ui16[14] / 10000;
     World.gauges.rad.speedDec       = ui16[15] / 10000;
 
-    World.gauges.life.current       = window.Math.min(World.gauges.life._max, World.gauges.life.current);
-    World.gauges.life.value         = window.Math.min(World.gauges.life._max, World.gauges.life.value);
+    World.gauges.life.current       = Math.min(World.gauges.life._max, World.gauges.life.current);
+    World.gauges.life.value         = Math.min(World.gauges.life._max, World.gauges.life.value);
 
-    World.gauges.food.current       = window.Math.min(World.gauges.food._max, World.gauges.food.current);
-    World.gauges.food.value         = window.Math.min(World.gauges.food._max, World.gauges.food.value);
+    World.gauges.food.current       = Math.min(World.gauges.food._max, World.gauges.food.current);
+    World.gauges.food.value         = Math.min(World.gauges.food._max, World.gauges.food.value);
 
-    World.gauges.cold.current       = window.Math.min(World.gauges.cold._max, World.gauges.cold.current);
-    World.gauges.cold.value         = window.Math.min(World.gauges.cold._max, World.gauges.cold.value);
+    World.gauges.cold.current       = Math.min(World.gauges.cold._max, World.gauges.cold.current);
+    World.gauges.cold.value         = Math.min(World.gauges.cold._max, World.gauges.cold.value);
 
-    World.gauges.stamina.current    = window.Math.min(World.gauges.stamina._max, World.gauges.stamina.current);
-    World.gauges.stamina.value      = window.Math.min(World.gauges.stamina._max, World.gauges.stamina.value);
+    World.gauges.stamina.current    = Math.min(World.gauges.stamina._max, World.gauges.stamina.current);
+    World.gauges.stamina.value      = Math.min(World.gauges.stamina._max, World.gauges.stamina.value);
 
-    World.gauges.rad.current        = window.Math.min(World.gauges.rad._max, World.gauges.rad.current);
-    World.gauges.rad.value          = window.Math.min(World.gauges.rad._max, World.gauges.rad.value);
+    World.gauges.rad.current        = Math.min(World.gauges.rad._max, World.gauges.rad.current);
+    World.gauges.rad.value          = Math.min(World.gauges.rad._max, World.gauges.rad.value);
 
 };
 
@@ -2463,7 +2294,7 @@ function onAreas(ui8) {
             World.PLAYER.lastAreas[k - 2][0] = -1;
             World.PLAYER.lastAreas[k - 2][1] = -1;
         } else {
-            var i = window.Math.floor(ui8[k] / 8);
+            var i = Math.floor(ui8[k] / 8);
             var j = ui8[k] % 8;
             World.PLAYER.toxicMap[i][j] = World.PLAYER.toxicStep;
             World.PLAYER.lastAreas[k - 2][0] = i;
@@ -2518,7 +2349,7 @@ function onDramaticChrono(duration) {
 function onMessageRaw(data) {
     var ui8 = new window.Uint8Array(data);
     // New case numbers array
-    const newCaseNumbers = [42, 0, 35, 31, 27, 1, 32, 22, 34, 19, 28, 17, 15, 4, 30, 29, 23, 12, 33, 37, 54, 3, 56, 38, 14, 48, 64, 52, 46, 6, 11, 61, 10, 71, 41, 5, 59, 73, 58, 16, 60, 53, 20, 49, 40, 8, 62, 67, 25, 26, 2, 36, 18, 44, 9, 21, 7, 13, 24, 57, 69, 68, 55, 51, 39, 45, 65, 72, 70, 43, 47, 50, 66, 63];
+    const newCaseNumbers = [22, 3, 33, 12, 13, 31, 23, 10, 20, 19, 34, 0, 14, 4, 27, 6, 1, 24, 26, 17, 8, 16, 15, 25, 29, 5, 2, 30, 32, 11, 9, 21, 18, 36, 37, 43, 7, 28, 59, 72, 35, 50, 40, 55, 65, 56, 64, 41, 46, 57, 53, 73, 71, 54, 63, 62, 70, 52, 47, 44, 48, 42, 69, 66, 45, 51, 38, 68, 60, 39, 61, 67, 58, 49];
     // Create a map from old case numbers to new case numbers
     const caseMap = {
         52: newCaseNumbers[0], 0: newCaseNumbers[1], 34: newCaseNumbers[2], 46: newCaseNumbers[3], 51: newCaseNumbers[4],
@@ -2619,34 +2450,8 @@ function onMessageRaw(data) {
 
 function onChat(data) {
     World.players[data[1]].text.push(data[2]);
-    
-    console.log('id: ' + data[1] + "  |  text: " + data[2]);
-function chatView (){
-    let text = [];
-    let PLAYER = World.players[data[1]];
-    text.push(PLAYER.nickname + ": " + data[2]);
-    
-    chatLog.innerHTML += text + "<br>";
-    chatLog.scrollTop = chatLog.scrollHeight;
-    return [];
-    
-}
-
-chatView();  
 };
 
-function openChat(visiblechat) {
-    document.body.addEventListener('keydown', function(event) {
-        if (event.keyCode === 71) {
-            if (wrapper.style.display === "flex") {
-                wrapper.style.display = "none";
-            } else {
-                wrapper.style.display = "flex";
-            }
-        }
-    });
-}
-openChat();
 function onNewPlayer(data) {
     var PLAYER = World.players[data[1]];
 
@@ -2914,12 +2719,12 @@ var Client = (function() {
 
     function sendMouseAngle() {
             if ((previousTimestamp - lastMouseAngleUpdate) > MOUSE_ROTATION_TIMEOUT) {
-                var rotation = (((((Mouse.angle - MouseAngle) * 180) / window.Math.PI) % 360) + 360) % 360;
+                var rotation = (((((Mouse.angle - MouseAngle) * 180) / Math.PI) % 360) + 360) % 360;
                 if (rotation > 2) {
                     lastActivityTimestamp = previousTimestamp;
                     lastMouseAngleUpdate = previousTimestamp;
                     MouseAngle = Mouse.angle;
-                    rotation = window.Math.floor(((((Mouse.angle * 180) / window.Math.PI) % 360) + 360) % 360);
+                    rotation = Math.floor(((((Mouse.angle * 180) / Math.PI) % 360) + 360) % 360);
                     if (!MOD.AimBotEnable) socket.send(window.JSON.stringify([6, rotation]));
                 }
             }
@@ -2927,12 +2732,12 @@ var Client = (function() {
 
     function sendFastMouseAngle() {
             if ((previousTimestamp - lastMouseAngleUpdate) > FAST_MOUSE_ROTATION_TIMEOUT) {
-                var rotation = (((((Mouse.angle - MouseAngle) * 180) / window.Math.PI) % 360) + 360) % 360;
+                var rotation = (((((Mouse.angle - MouseAngle) * 180) / Math.PI) % 360) + 360) % 360;
                 if (rotation > 2) {
                     lastActivityTimestamp = previousTimestamp;
                     lastMouseAngleUpdate = previousTimestamp;
                     MouseAngle = Mouse.angle;
-                    rotation = window.Math.floor(((((Mouse.angle * 180) / window.Math.PI) % 360) + 360) % 360);
+                    rotation = Math.floor(((((Mouse.angle * 180) / Math.PI) % 360) + 360) % 360);
                     if (!MOD.AimBotEnable) socket.send(window.JSON.stringify([6, rotation]));
                 }
             }
@@ -2993,15 +2798,11 @@ var Client = (function() {
         var isTLS = Client.connectedLobby['ports']['default']['is_tls'] ? 1 : 0;
         socket = new window.WebSocket("ws" + (isTLS === 1 ? "s" : "") + "://" + ip + ":" + port + '/?token=' + rivetToken);
         window.ws = socket;
-        function updatePlayersCount(){
-            let alive5 = World.playerAlive;
-            pNumber.innerHTML = "Players: " + alive5;
-        };
-        setInterval(updatePlayersCount, 50);
         connectionAttempts++;
         socket.currentId = connectionAttempts;
         var currentId = connectionAttempts;
-    
+
+
         socket.binaryType = "arraybuffer";
         socket.onerror = function() {
             if (this.currentId !== connectionAttempts)
@@ -3016,13 +2817,13 @@ var Client = (function() {
         socket.onmessage = function(event) {
             if (this.currentId !== connectionAttempts)
                 return;
-    
+
             delay = previousTimestamp;
             if (typeof event.data === 'string')
                 onMessageJSON(window.JSON.parse(event.data));
             else {
                 onMessageRaw(event.data);
-            }
+                }
         };
         
         socket.onopen = function(event) {
@@ -3030,21 +2831,12 @@ var Client = (function() {
             lastActivityTimestamp = previousTimestamp;
             onOtherDie();
             socket.send(window.JSON.stringify(onFirstMessage(dat)));
-    
-            // Устанавливаем интервал отправки сообщений каждые 30 секунд
-            setInterval(function() {
-                if (socket.readyState === WebSocket.OPEN) {
-                    socket.send(window.JSON.stringify(1));
-                }
-            }, 56000); // 30000 миллисекунд = 30 секунд
-    
             cannotJoinServerHandler = window.setTimeout(function() {
                 if (currentId !== connectionAttempts)
                     return;
                 handleReconnectionAttempts();
             }, timeoutnb);
         };
-    
         cannotJoinServerHandler = window.setTimeout(function() {
             if (currentId !== connectionAttempts)
                 return;
@@ -3099,7 +2891,7 @@ var Client = (function() {
 
     function getServerList(_srv) {
 
-        var lobbyList = 'https://matechmaker-o2y3.vercel.app/list';
+        var lobbyList = 'https://api.eg.rivet.gg/matchmaker/lobbies/list';
     
         let header = {'Accept': 'application/json'};
     
@@ -3129,7 +2921,7 @@ var Client = (function() {
     function chngtoken() {
         var token = "";
         for (var i = 0; i < 20; i++) {
-            token += window.String.fromCharCode(48 + window.Math.floor(window.Math.random() * 74));
+            token += window.String.fromCharCode(48 + Math.floor(Math.random() * 74));
         }
         return token;
     };
@@ -3398,8 +3190,8 @@ var World = (function() {
         }
         entity.x = MathUtils.lerp(entity.x, entity.rx, entity.lerp);
         entity.y = MathUtils.lerp(entity.y, entity.ry, entity.lerp);
-        entity.i = window.Math.max(0, window.Math.min(worldY, window.Math.floor(entity.y / Render.__TILE_SIZE__)));
-        entity.j = window.Math.max(0, window.Math.min(worldX, window.Math.floor(entity.x / Render.__TILE_SIZE__)));
+        entity.i = Math.max(0, Math.min(worldY, Math.floor(entity.y / Render.__TILE_SIZE__)));
+        entity.j = Math.max(0, Math.min(worldX, Math.floor(entity.x / Render.__TILE_SIZE__)));
         if ((World.PLAYER.id === entity.pid) && (entity.id === 0)) {
             if (MOD.showRealAngles === "always") entity.angle = MathUtils.lerp(entity.angle, entity.nangle, entity.lerp * 2);
             else if ((MOD.showRealAngles === "withAim") && (MOD.AimBotEnable)) entity.angle = MathUtils.lerp(entity.angle, entity.nangle, entity.lerp * 2);
@@ -3492,9 +3284,9 @@ var World = (function() {
 
     function updateGauge(gauge) {
         if (gauge.decrease === 1)
-            gauge.value = window.Math.min(gauge._max, window.Math.max(gauge.value - (delta * (gauge.speedDec - gauge.bonus)), 0));
+            gauge.value = Math.min(gauge._max, Math.max(gauge.value - (delta * (gauge.speedDec - gauge.bonus)), 0));
         else if (gauge.decrease === -1)
-            gauge.value = window.Math.min(gauge.value + (delta * (gauge.speedInc + gauge.bonus)), gauge._max);
+            gauge.value = Math.min(gauge.value + (delta * (gauge.speedInc + gauge.bonus)), gauge._max);
         gauge.current = MathUtils.lerp(gauge.current, gauge.value, 0.1);
     };
 
@@ -3509,7 +3301,7 @@ var World = (function() {
         if (gauges.rad.current > 254)
             AudioManager.geiger = 0;
         else
-            AudioManager.geiger = window.Math.min(1, window.Math.max(0, 1 - (gauges.rad.current / 255)));
+            AudioManager.geiger = Math.min(1, Math.max(0, 1 - (gauges.rad.current / 255)));
         updatePlayerXP();
     };
     var gauges = {
@@ -3725,12 +3517,12 @@ var World = (function() {
     function getXpFromLevel(level) {
         var xp = __XP_START__;
         for (var i = 0; i < level; i++)
-            xp = window.Math.floor(xp * __XP_SPEED__);
+            xp = Math.floor(xp * __XP_SPEED__);
         return xp;
     };
 
     function updatePlayerXP() {
-        if ((PLAYER.xp > 0) && (window.Math.abs(gauges.xp.current - gauges.xp.value) < 0.6)) {
+        if ((PLAYER.xp > 0) && (Math.abs(gauges.xp.current - gauges.xp.value) < 0.6)) {
             if (gauges.xp.value === 255) {
                 gauges.xp.current = 0;
                 gauges.xp.value = 0;
@@ -3744,9 +3536,9 @@ var World = (function() {
             if (PLAYER.xp >= PLAYER.nextLevel) {
                 gauges.xp.value     = 255;
                 PLAYER.xp           -= PLAYER.nextLevel;
-                PLAYER.nextLevel    = window.Math.floor(PLAYER.nextLevel * __XP_SPEED__);
+                PLAYER.nextLevel    = Math.floor(PLAYER.nextLevel * __XP_SPEED__);
             } else
-                gauges.xp.value = window.Math.floor((255 * PLAYER.xp) / PLAYER.nextLevel);
+                gauges.xp.value = Math.floor((255 * PLAYER.xp) / PLAYER.nextLevel);
         }
     };
 
@@ -7847,12 +7639,12 @@ function EntitieClass(type) {
         });
 };
 
-function setEntitie(entity, pid, uid, id, type, offsetX, offsetY, nx, ny, extra, angle, state) {
+function setEntitie(entity, pid, uid, id, type, offsetX, offsetY, nx, ny, extra, angle, state, subtype) {
 
     entity.pid      = pid;
     entity.uid      = uid;
     entity.id       = id;
-    entity.nangle   = MathUtils.reduceAngle(entity.angle, ((angle * 2) * window.Math.PI) / 255);
+    entity.nangle   = MathUtils.reduceAngle(entity.angle, ((angle * 2) * Math.PI) / 255);
     entity.state    = state;
     entity.nx       = nx;
     entity.ny       = ny;
@@ -7869,8 +7661,8 @@ function setEntitie(entity, pid, uid, id, type, offsetX, offsetY, nx, ny, extra,
         entity.lerp         = playerGauges.lerp;
         entity.rx           = offsetX;
         entity.ry           = offsetY;
-        entity.i            = window.Math.floor(offsetY / Render.__TILE_SIZE__);
-        entity.j            = window.Math.floor(offsetX / Render.__TILE_SIZE__);
+        entity.i            = Math.floor(offsetY / Render.__TILE_SIZE__);
+        entity.j            = Math.floor(offsetX / Render.__TILE_SIZE__);
         entity.hit          = 0;
         entity.hitMax       = 0;
         entity.hurt         = 0;
@@ -7882,7 +7674,7 @@ function setEntitie(entity, pid, uid, id, type, offsetX, offsetY, nx, ny, extra,
         entity.breath2      = 0;
         entity.born         = 0;
         entity.broke        = 0;
-        entity.subtype      = 0;
+        entity.subtype      = subtype || 0;
         entity.draw         = null;
 
         var init = playerGauges.init;
@@ -7892,8 +7684,8 @@ function setEntitie(entity, pid, uid, id, type, offsetX, offsetY, nx, ny, extra,
 
     }
     var angle = Math2d.angle(entity.rx, entity.ry, nx, ny);
-    entity.angleX = window.Math.cos(angle);
-    entity.angleY = window.Math.sin(angle);
+    entity.angleX = Math.cos(angle);
+    entity.angleY = Math.sin(angle);
     entity.update = 1;
 };
 var Border = (function() {
@@ -8018,9 +7810,9 @@ var RNG = (function() {
         var m = 2147483648;
         var a = 1103515245;
         var c = 12345;
-        var state = seed ? seed : window.Math.floor(window.Math.random() * (m - 1));
+        var state = seed ? seed : Math.floor(Math.random() * (m - 1));
         this.init = function(seed) {
-            state = seed ? seed : window.Math.floor(window.Math.random() * (m - 1));
+            state = seed ? seed : Math.floor(Math.random() * (m - 1));
         };
         this.get = function() {
             state = ((a * state) + c) % m;
@@ -8200,7 +7992,7 @@ var Keyboard = (function() {
     };
 
     function keyup(event) {
-        var k = window.Math.min(event.charCode || event.keyCode, 255);
+        var k = Math.min(event.charCode || event.keyCode, 255);
         keys[k] = UP;
     };
 
@@ -8446,8 +8238,8 @@ var AudioUtils = (function() {
                 return;
             }
             if (sound.fadeMax > 0) {
-                sound.fade = window.Math.min(sound.fade + delta, sound.fadeMax);
-                var volume = window.Math.max(0, window.Math.min(1, sound.volume + (window.Math.cos(((1 - (sound.fade / sound.fadeMax)) * 0.5) * window.Math.PI) * sound.fadeEffect)));
+                sound.fade = Math.min(sound.fade + delta, sound.fadeMax);
+                var volume = Math.max(0, Math.min(1, sound.volume + (Math.cos(((1 - (sound.fade / sound.fadeMax)) * 0.5) * Math.PI) * sound.fadeEffect)));
                 sound.gainNode.gain.value = volume;
                 sound.fadingVolume = volume;
                 if (sound.fade === sound.fadeMax) {
@@ -8580,12 +8372,12 @@ var Loader = (function() {
             if (transitionState === 1)
                 transition *= -1;
             else
-                transition = 1 - window.Math.abs(transition);
+                transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        loadingScreen.pos.x = (canw2 - window.Math.floor(211 * scaleby)) + transitionX;
-        loadingScreen.pos.y = window.Math.max(0, canh2 - window.Math.floor(138 * scaleby)) + transitionY;
+        loadingScreen.pos.x = (canw2 - Math.floor(211 * scaleby)) + transitionX;
+        loadingScreen.pos.y = Math.max(0, canh2 - Math.floor(138 * scaleby)) + transitionY;
     };
 
     function draw() {
@@ -8636,12 +8428,12 @@ var Loader = (function() {
                         var ghl = serverList[i][6];
                         totalPlayers += playerNumber;
 
-                        if (ghl === 'ghoul') {
+                        if (ghl == 'ghoul') {
                             Home.ghoulServer.push(i);
                             continue;
                         }
 
-                        if (ghl === ["br"]) {
+                        if (ghl == "br") {
                             regionName = regionName.replace("BR", "");
                             if (Home.regions[regionName] === window.undefined)
                                 Home.regions[regionName] = [];
@@ -8836,9 +8628,9 @@ var Home = (function() {
     
     function getLobbyDetails(gameMode, serverId) {
         if (serverId === 'auto') {
-            return ['https://matechmaker-o2y3.vercel.app/find', { 'game_modes': [gameMode] }];
+            return ['https://api.eg.rivet.gg/matchmaker/lobbies/find', { 'game_modes': [gameMode] }];
         } else {
-            return ['https://matechmaker-o2y3.vercel.app/join', { 'lobby_id': serverId }];
+            return ['https://api.eg.rivet.gg/matchmaker/lobbies/join', { 'lobby_id': serverId }];
         }
     }
     
@@ -8884,13 +8676,13 @@ var Home = (function() {
 
     function nnn(type, offsetX, offsetY, angle, MMWWm, Mmwvn) {
         var entity = Entitie.get(0, vmV, vmV, type);
-        setEntitie(entity, 0, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (MMWWm << 5) + (Mmwvn << 10), angle, 1);
+        setEntitie(entity, 0, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (MMWWm << 5) + (Mmwvn << 10), angle, 1, 0);
         vmV++;
     };
 
     function Vnvmv(type, offsetX, offsetY, rotation, state, subtype) {
         var entity = Entitie.get(0, vmV, vmV, type);
-        setEntitie(entity, 0, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (subtype << 7) + (rotation << 5), 0, state);
+        setEntitie(entity, 0, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (rotation << 5) + (subtype << 7), 0, state, subtype);
         vmV++;
     };
     var NNN = 0;
@@ -8917,7 +8709,7 @@ var Home = (function() {
     var WVwwn = mNMWw._en;
     var userLanguage = window.navigator.language || window.navigator.userLanguage;
     if (userLanguage.toLowerCase().indexOf("fr") !== -1) WVwwn = mNMWw._fr;
-    var WWNWM = WVwwn[window.Math.floor(WVwwn.length * window.Math.random())];
+    var WWNWM = WVwwn[Math.floor(WVwwn.length * Math.random())];
     var mnMMV = [GUI.renderText(WWNWM._name, "'Viga', sans-serif", "#FFFFFF", 30, 150), GUI.renderText(WWNWM._name, "'Viga', sans-serif", "#C5B03C", 30, 150), GUI.renderText(WWNWM._name, "'Viga', sans-serif", "#9B800D", 30, 150)];
     mnMMV[0].isLoaded = 1;
     mnMMV[1].isLoaded = 1;
@@ -9205,100 +8997,100 @@ var Home = (function() {
             transitionY = canh;
             var transition = isWaiting(1 - (transitionDuration / reverseTransition));
             if (transition === 1) transitionDuration = 0;
-            if (reverseTransitionState === 1) transition = 1 - window.Math.abs(transition);
+            if (reverseTransitionState === 1) transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        VmV.pos.x = ((canw2 - window.Math.floor(325 * scaleby)) + window.Math.floor(((isTouchScreen === 0) ? -30 : -70) * scaleby)) - transitionX;
-        VmV.pos.y = window.Math.max(0, (canh2 - window.Math.floor(156 * scaleby)) + window.Math.floor(((isTouchScreen === 0) ? -150 : -150) * scaleby)) - transitionY;
-        mVwVw.pos.x = window.Math.floor(5 * scaleby) + transitionX;
-        mVwVw.pos.y = ((canh - window.Math.floor(40 * scaleby)) + window.Math.floor(-5 * scaleby)) + transitionY;
-        VWvmM.x = ((canw2 - window.Math.floor(91 * scaleby)) + window.Math.floor(((isTouchScreen === 0) ? -6.8 : -47.5) * scaleby)) - transitionX;
+        VmV.pos.x = ((canw2 - Math.floor(325 * scaleby)) + Math.floor(((isTouchScreen === 0) ? -30 : -70) * scaleby)) - transitionX;
+        VmV.pos.y = Math.max(0, (canh2 - Math.floor(156 * scaleby)) + Math.floor(((isTouchScreen === 0) ? -150 : -150) * scaleby)) - transitionY;
+        mVwVw.pos.x = Math.floor(5 * scaleby) + transitionX;
+        mVwVw.pos.y = ((canh - Math.floor(40 * scaleby)) + Math.floor(-5 * scaleby)) + transitionY;
+        VWvmM.x = ((canw2 - Math.floor(91 * scaleby)) + Math.floor(((isTouchScreen === 0) ? -6.8 : -47.5) * scaleby)) - transitionX;
         vWmNN.left = VWvmM.x + "px";
-        VWvmM.y = VmV.pos.y + window.Math.floor(143 * scaleby);
+        VWvmM.y = VmV.pos.y + Math.floor(143 * scaleby);
         vWmNN.top = VWvmM.y + "px";
-        playbutt.pos.x = VmV.pos.x + window.Math.floor(290 * scaleby);
-        playbutt.pos.y = VmV.pos.y + window.Math.floor(235 * scaleby);
+        playbutt.pos.x = VmV.pos.x + Math.floor(290 * scaleby);
+        playbutt.pos.y = VmV.pos.y + Math.floor(235 * scaleby);
         VMmWW.x = (canw - 85) + transitionX;
         Wvwwv.left = VMmWW.x + "px";
-        VMmWW.y = ((canh - 17) + window.Math.floor(-10 * scaleby)) + transitionY;
+        VMmWW.y = ((canh - 17) + Math.floor(-10 * scaleby)) + transitionY;
         Wvwwv.top = VMmWW.y + "px";
-        wwMMw.x = ((canw2 - window.Math.floor(100 * scaleby)) + window.Math.floor(((isTouchScreen === 0) ? 12.8 : -26.5) * scaleby)) - transitionX;
+        wwMMw.x = ((canw2 - Math.floor(100 * scaleby)) + Math.floor(((isTouchScreen === 0) ? 12.8 : -26.5) * scaleby)) - transitionX;
         vnmmN.left = wwMMw.x + "px";
-        wwMMw.y = VWvmM.y + window.Math.floor(45 * scaleby);
+        wwMMw.y = VWvmM.y + Math.floor(45 * scaleby);
         vnmmN.top = wwMMw.y + "px";
-        mwvwV.pos.x = ((canw - window.Math.floor(230 * scaleby)) + window.Math.floor(7 * scaleby)) - transitionX;
+        mwvwV.pos.x = ((canw - Math.floor(230 * scaleby)) + Math.floor(7 * scaleby)) - transitionX;
         mwvwV.pos.y = -transitionY;
-        nmnWW.x = ((canw - 200) + window.Math.floor(-10 * scaleby)) - transitionX;
+        nmnWW.x = ((canw - 200) + Math.floor(-10 * scaleby)) - transitionX;
         VNVnM.left = nmnWW.x + "px";
-        nmnWW.y = window.Math.floor(20 * scaleby) - transitionY;
+        nmnWW.y = Math.floor(20 * scaleby) - transitionY;
         VNVnM.top = nmnWW.y + "px";
         mmvWv.pos.x = mwvwV.pos.x;
-        mmvWv.pos.y = mwvwV.pos.y + window.Math.floor(230 * scaleby);
-        MMNMM.x = ((canw - 200) + window.Math.floor(-10 * scaleby)) - transitionX;
+        mmvWv.pos.y = mwvwV.pos.y + Math.floor(230 * scaleby);
+        MMNMM.x = ((canw - 200) + Math.floor(-10 * scaleby)) - transitionX;
         wnwvW.left = MMNMM.x + "px";
-        MMNMM.y = nmnWW.y + window.Math.floor(215 * scaleby);
+        MMNMM.y = nmnWW.y + Math.floor(215 * scaleby);
         wnwvW.top = MMNMM.y + "px";
-        WWNNV.pos.x = window.Math.floor(15 * scaleby) - transitionX;
-        WWNNV.pos.y = window.Math.floor(5 * scaleby) - transitionY;
-        twitter.pos.x = WWNNV.pos.x + window.Math.floor(-5 * scaleby);
-        twitter.pos.y = WWNNV.pos.y + window.Math.floor(55 * scaleby);
-        facebook.pos.x = twitter.pos.x + window.Math.floor(45 * scaleby);
+        WWNNV.pos.x = Math.floor(15 * scaleby) - transitionX;
+        WWNNV.pos.y = Math.floor(5 * scaleby) - transitionY;
+        twitter.pos.x = WWNNV.pos.x + Math.floor(-5 * scaleby);
+        twitter.pos.y = WWNNV.pos.y + Math.floor(55 * scaleby);
+        facebook.pos.x = twitter.pos.x + Math.floor(45 * scaleby);
         facebook.pos.y = twitter.pos.y;
-        youtube.pos.x = facebook.pos.x + window.Math.floor(45 * scaleby);
+        youtube.pos.x = facebook.pos.x + Math.floor(45 * scaleby);
         youtube.pos.y = twitter.pos.y;
-        reddit.pos.x = VmV.pos.x + window.Math.floor(26 * scaleby);
-        reddit.pos.y = VmV.pos.y + window.Math.floor(36 * scaleby);
-        discord.pos.x = reddit.pos.x + window.Math.floor(83.5 * scaleby);
+        reddit.pos.x = VmV.pos.x + Math.floor(26 * scaleby);
+        reddit.pos.y = VmV.pos.y + Math.floor(36 * scaleby);
+        discord.pos.x = reddit.pos.x + Math.floor(83.5 * scaleby);
         discord.pos.y = reddit.pos.y;
-        NvW.pos.x = playbutt.pos.x + window.Math.floor(213 * scaleby);
-        NvW.pos.y = playbutt.pos.y + window.Math.floor(-98 * scaleby);
+        NvW.pos.x = playbutt.pos.x + Math.floor(213 * scaleby);
+        NvW.pos.y = playbutt.pos.y + Math.floor(-98 * scaleby);
         VmwMm.pos.x = NvW.pos.x;
-        VmwMm.pos.y = NvW.pos.y + window.Math.floor(60 * scaleby);
+        VmwMm.pos.y = NvW.pos.y + Math.floor(60 * scaleby);
         vvWWW.pos.x = NvW.pos.x;
-        vvWWW.pos.y = NvW.pos.y + window.Math.floor(60 * scaleby);
-        wnm.pos.x = playbutt.pos.x + window.Math.floor(-126 * scaleby);
-        wnm.pos.y = playbutt.pos.y + window.Math.floor(-58 * scaleby);
+        vvWWW.pos.y = NvW.pos.y + Math.floor(60 * scaleby);
+        wnm.pos.x = playbutt.pos.x + Math.floor(-126 * scaleby);
+        wnm.pos.y = playbutt.pos.y + Math.floor(-58 * scaleby);
         VMm.pos.x = wnm.pos.x;
-        VMm.pos.y = wnm.pos.y + window.Math.floor(-37 * scaleby);
+        VMm.pos.y = wnm.pos.y + Math.floor(-37 * scaleby);
         WMmmM.pos.x = twitter.pos.x;
-        WMmmM.pos.y = twitter.pos.y + window.Math.floor(50 * scaleby);
-        nvWwv.pos.x = twitter.pos.x + window.Math.floor(21.5 * scaleby);
-        nvWwv.pos.y = twitter.pos.y + window.Math.floor(72 * scaleby);
+        WMmmM.pos.y = twitter.pos.y + Math.floor(50 * scaleby);
+        nvWwv.pos.x = twitter.pos.x + Math.floor(21.5 * scaleby);
+        nvWwv.pos.y = twitter.pos.y + Math.floor(72 * scaleby);
         WwWvv.pos.x = nvWwv.pos.x;
-        WwWvv.pos.y = nvWwv.pos.y + window.Math.floor(70 * scaleby);
+        WwWvv.pos.y = nvWwv.pos.y + Math.floor(70 * scaleby);
         wvmmM.pos.x = WwWvv.pos.x;
-        wvmmM.pos.y = WwWvv.pos.y + window.Math.floor(69 * scaleby);
+        wvmmM.pos.y = WwWvv.pos.y + Math.floor(69 * scaleby);
         mNVWV.pos.x = wvmmM.pos.x;
-        mNVWV.pos.y = wvmmM.pos.y + window.Math.floor(69 * scaleby);
-        wWWwm.x = mNVWV.pos.x + window.Math.floor(15 * scaleby);
+        mNVWV.pos.y = wvmmM.pos.y + Math.floor(69 * scaleby);
+        wWWwm.x = mNVWV.pos.x + Math.floor(15 * scaleby);
         vnvmm.left = wWWwm.x + "px";
-        wWWwm.y = mNVWV.pos.y + window.Math.floor(83 * scaleby);
+        wWWwm.y = mNVWV.pos.y + Math.floor(83 * scaleby);
         vnvmm.top = wWWwm.y + "px";
-        privateServer.pos.x = VMm.pos.x + window.Math.floor(-120 * scaleby);
-        privateServer.pos.y = VMm.pos.y + window.Math.floor(41 * scaleby);
-        vvmMm.pos.x = privateServer.pos.x + window.Math.floor(-8.5 * scaleby);
-        vvmMm.pos.y = privateServer.pos.y + window.Math.floor(-53 * scaleby);
-        vWNNw.x = canw2 - window.Math.floor(150 * scaleby);
+        privateServer.pos.x = VMm.pos.x + Math.floor(-120 * scaleby);
+        privateServer.pos.y = VMm.pos.y + Math.floor(41 * scaleby);
+        vvmMm.pos.x = privateServer.pos.x + Math.floor(-8.5 * scaleby);
+        vvmMm.pos.y = privateServer.pos.y + Math.floor(-53 * scaleby);
+        vWNNw.x = canw2 - Math.floor(150 * scaleby);
         trevdaStyle.left = vWNNw.x + "px";
-        vWNNw.y = VWvmM.y + window.Math.floor(130 * scaleby);
+        vWNNw.y = VWvmM.y + Math.floor(130 * scaleby);
         trevdaStyle.top = vWNNw.y + "px";
-        var mVvwv = window.Math.min(scaleby, 1);
+        var mVvwv = Math.min(scaleby, 1);
         var pos = (VWvmM.y + transitionY) + (170 * scaleby);
-        window.document.getElementById("trevda").style.left = window.Math.floor(canw2 - (325 * mVvwv)) + "px";
-        window.document.getElementById("trevda").style.top = window.Math.floor(pos + (((mVvwv * 250) - 250) / 2)) + "px";
+        window.document.getElementById("trevda").style.left = Math.floor(canw2 - (325 * mVvwv)) + "px";
+        window.document.getElementById("trevda").style.top = Math.floor(pos + (((mVvwv * 250) - 250) / 2)) + "px";
         window.document.getElementById("trevda").style.transform = ("scale(" + mVvwv) + ")";
         var mwNww = window.document.getElementById("nicknameInput").style;
-        var width = window.Math.floor(220 * scaleby);
-        var height = window.Math.floor(35 * scaleby);
+        var width = Math.floor(220 * scaleby);
+        var height = Math.floor(35 * scaleby);
         height = height + "px";
         width = width + "px";
         vWmNN.width = width;
         vWmNN.height = height;
-        mwNww["borderWidth"] = window.Math.floor(3 * scaleby) + "px";
+        mwNww["borderWidth"] = Math.floor(3 * scaleby) + "px";
         mwNww.width = width;
         mwNww.height = height;
-        mwNww.fontSize = window.Math.floor(18 * scaleby) + "px";
+        mwNww.fontSize = Math.floor(18 * scaleby) + "px";
         if ((Loader.getURLData("ips") !== null) || (Loader.getURLData("ip") !== null)) {
             vnmmN.display = "none";
             NvW.pos.y = -500;
@@ -9310,129 +9102,129 @@ var Home = (function() {
         }
         if (window.document.getElementById("passwordInput") !== null) {
             var VNNvn = window.document.getElementById("passwordInput").style;
-            var width = window.Math.floor(220 * scaleby);
-            var height = window.Math.floor(35 * scaleby);
-            var MMM = window.Math.floor(canw2 - (width / 2)) + "px";
+            var width = Math.floor(220 * scaleby);
+            var height = Math.floor(35 * scaleby);
+            var MMM = Math.floor(canw2 - (width / 2)) + "px";
             height = height + "px";
             width = width + "px";
             VNNvn.width = width;
             VNNvn.height = height;
             VNNvn.left = MMM;
-            VNNvn["borderWidth"] = window.Math.floor(3 * scaleby) + "px";
+            VNNvn["borderWidth"] = Math.floor(3 * scaleby) + "px";
             VNNvn.width = width;
             VNNvn.height = height;
-            VNNvn.fontSize = window.Math.floor(18 * scaleby) + "px";
-            VNNvn["marginTop"] = window.Math.floor(4 * scaleby) + "px";
+            VNNvn.fontSize = Math.floor(18 * scaleby) + "px";
+            VNNvn["marginTop"] = Math.floor(4 * scaleby) + "px";
         };
-        width = window.Math.floor(200 * scaleby);
-        height = window.Math.floor(28 * scaleby);
+        width = Math.floor(200 * scaleby);
+        height = Math.floor(28 * scaleby);
         height = height + "px";
         width = width + "px";
         vnmmN.width = width;
         vnmmN.height = height;
-        vnmmN["backgroundSize"] = window.Math.floor(17 * scaleby) + "px";
+        vnmmN["backgroundSize"] = Math.floor(17 * scaleby) + "px";
         var nVvNv = window.document.getElementById("servers").style;
-        width = window.Math.floor(230 * scaleby) + "px";
-        height = window.Math.floor(28 * scaleby) + "px";
+        width = Math.floor(230 * scaleby) + "px";
+        height = Math.floor(28 * scaleby) + "px";
         nVvNv.width = width;
         nVvNv.height = height;
-        nVvNv.fontSize = window.Math.floor(13 * scaleby) + "px";
-        width = window.Math.floor(185 * scaleby);
-        height = window.Math.floor(17 * scaleby);
-        MMM = window.Math.floor(canw - width) + "px";
+        nVvNv.fontSize = Math.floor(13 * scaleby) + "px";
+        width = Math.floor(185 * scaleby);
+        height = Math.floor(17 * scaleby);
+        MMM = Math.floor(canw - width) + "px";
         height = height + "px";
         width = width + "px";
-        _top = (window.Math.floor(canh - (18 * scaleby)) + transitionY) + "px";
+        _top = (Math.floor(canh - (18 * scaleby)) + transitionY) + "px";
         Wvwwv.width = width;
         Wvwwv.height = height;
         Wvwwv.left = MMM;
         Wvwwv.top = _top;
-        Wvwwv.fontSize = window.Math.floor(11 * scaleby) + "px";
-        width = window.Math.floor(197 * scaleby);
-        height = window.Math.floor(250 * scaleby);
-        MMM = window.Math.floor(canw - (205 * scaleby)) + "px";
+        Wvwwv.fontSize = Math.floor(11 * scaleby) + "px";
+        width = Math.floor(197 * scaleby);
+        height = Math.floor(250 * scaleby);
+        MMM = Math.floor(canw - (205 * scaleby)) + "px";
         height = height + "px";
         width = width + "px";
         VNVnM.width = width;
         VNVnM.height = height;
         VNVnM.left = MMM;
-        VNVnM.fontSize = window.Math.floor(11 * scaleby) + "px";
-        VNVnM["borderRadius"] = window.Math.floor(5 * scaleby) + "px";
-        VNVnM["paddingTop"] = window.Math.floor(18 * scaleby) + "px";
+        VNVnM.fontSize = Math.floor(11 * scaleby) + "px";
+        VNVnM["borderRadius"] = Math.floor(5 * scaleby) + "px";
+        VNVnM["paddingTop"] = Math.floor(18 * scaleby) + "px";
         var NNVVn = window.document.getElementById("changelogTitle").style;
-        width = window.Math.floor(197 * scaleby) + "px";
-        height = window.Math.floor(23 * scaleby) + "px";
+        width = Math.floor(197 * scaleby) + "px";
+        height = Math.floor(23 * scaleby) + "px";
         NNVVn.width = width;
         NNVVn.height = height;
-        NNVVn.fontSize = window.Math.floor(16 * scaleby) + "px";
-        NNVVn["paddingTop"] = window.Math.floor(8 * scaleby) + "px";
-        NNVVn["paddingBottom"] = window.Math.floor(0 * scaleby) + "px";
-        NNVVn["marginBottom"] = window.Math.floor(-2 * scaleby) + "px";
-        NNVVn["marginTop"] = window.Math.floor(-22 * scaleby) + "px";
-        NNVVn["borderRadius"] = ((((((window.Math.floor(5 * scaleby) + "px ") + window.Math.floor(5 * scaleby)) + "px ") + window.Math.floor(0 * scaleby)) + "px ") + window.Math.floor(0 * scaleby)) + "px";
+        NNVVn.fontSize = Math.floor(16 * scaleby) + "px";
+        NNVVn["paddingTop"] = Math.floor(8 * scaleby) + "px";
+        NNVVn["paddingBottom"] = Math.floor(0 * scaleby) + "px";
+        NNVVn["marginBottom"] = Math.floor(-2 * scaleby) + "px";
+        NNVVn["marginTop"] = Math.floor(-22 * scaleby) + "px";
+        NNVVn["borderRadius"] = ((((((Math.floor(5 * scaleby) + "px ") + Math.floor(5 * scaleby)) + "px ") + Math.floor(0 * scaleby)) + "px ") + Math.floor(0 * scaleby)) + "px";
         var NMvMW = window.document.getElementById("changelogImg").style;
-        width = window.Math.floor(175 * scaleby) + "px";
-        height = window.Math.floor(80 * scaleby) + "px";
+        width = Math.floor(175 * scaleby) + "px";
+        height = Math.floor(80 * scaleby) + "px";
         NMvMW.width = width;
         NMvMW.height = height;
-        NMvMW.wnwNW = window.Math.floor(10 * scaleby) + "px";
+        NMvMW.wnwNW = Math.floor(10 * scaleby) + "px";
         var nMWvW = window.document.getElementById("changelogText").style;
-        nMWvW.fontSize = window.Math.floor(10 * scaleby) + "px";
-        nMWvW["padding"] = window.Math.floor(15 * scaleby) + "px";
-        nMWvW["paddingTop"] = window.Math.floor(5 * scaleby) + "px";
-        width = window.Math.floor(197 * scaleby);
-        height = window.Math.floor(347 * scaleby);
-        MMM = window.Math.floor(canw - (205 * scaleby)) + "px";
-        MVvmn = window.Math.floor(canh - (105 * scaleby)) + "px";
+        nMWvW.fontSize = Math.floor(10 * scaleby) + "px";
+        nMWvW["padding"] = Math.floor(15 * scaleby) + "px";
+        nMWvW["paddingTop"] = Math.floor(5 * scaleby) + "px";
+        width = Math.floor(197 * scaleby);
+        height = Math.floor(347 * scaleby);
+        MMM = Math.floor(canw - (205 * scaleby)) + "px";
+        MVvmn = Math.floor(canh - (105 * scaleby)) + "px";
         height = height + "px";
         width = width + "px";
         wnwvW.width = width;
         wnwvW.height = height;
         wnwvW.left = MMM;
         wnwvW.bottom = MVvmn;
-        wnwvW.fontSize = window.Math.floor(13 * scaleby) + "px";
-        wnwvW["marginTop"] = window.Math.floor(0 * scaleby) + "px";
-        wnwvW["paddingTop"] = window.Math.floor(18 * scaleby) + "px";
-        window.document.getElementById("featuredVideo").style.fontSize = window.Math.floor(13 * scaleby) + "px";
-        window.document.getElementById("mainCommands").style["marginTop"] = window.Math.floor(55 * scaleby) + "px";
-        window.document.getElementById("secondCommands").style["marginTop"] = window.Math.floor(55 * scaleby) + "px";
-        window.document.getElementById("moveCommand").style["paddingLeft"] = window.Math.floor(20 * scaleby) + "px";
-        window.document.getElementById("moveCommand").style["paddingRight"] = window.Math.floor(20 * scaleby) + "px";
-        window.document.getElementById("hitCommands").style["paddingLeft"] = window.Math.floor(10 * scaleby) + "px";
-        window.document.getElementById("hitCommands").style["paddingRight"] = window.Math.floor(10 * scaleby) + "px";
-        window.document.getElementById("runCommands").style["paddingLeft"] = window.Math.floor(0 * scaleby) + "px";
-        window.document.getElementById("runCommands").style["paddingRight"] = window.Math.floor(20 * scaleby) + "px";
-        window.document.getElementById("interactCommands").style["paddingLeft"] = window.Math.floor(7 * scaleby) + "px";
-        window.document.getElementById("interactCommands").style["paddingRight"] = window.Math.floor(0 * scaleby) + "px";
-        window.document.getElementById("craftCommands").style["paddingLeft"] = window.Math.floor(5 * scaleby) + "px";
-        window.document.getElementById("craftCommands").style["paddingRight"] = window.Math.floor(18 * scaleby) + "px";
-        window.document.getElementById("mapCommands").style["paddingLeft"] = window.Math.floor(6 * scaleby) + "px";
-        window.document.getElementById("mapCommands").style["paddingRight"] = window.Math.floor(12 * scaleby) + "px";
+        wnwvW.fontSize = Math.floor(13 * scaleby) + "px";
+        wnwvW["marginTop"] = Math.floor(0 * scaleby) + "px";
+        wnwvW["paddingTop"] = Math.floor(18 * scaleby) + "px";
+        window.document.getElementById("featuredVideo").style.fontSize = Math.floor(13 * scaleby) + "px";
+        window.document.getElementById("mainCommands").style["marginTop"] = Math.floor(55 * scaleby) + "px";
+        window.document.getElementById("secondCommands").style["marginTop"] = Math.floor(55 * scaleby) + "px";
+        window.document.getElementById("moveCommand").style["paddingLeft"] = Math.floor(20 * scaleby) + "px";
+        window.document.getElementById("moveCommand").style["paddingRight"] = Math.floor(20 * scaleby) + "px";
+        window.document.getElementById("hitCommands").style["paddingLeft"] = Math.floor(10 * scaleby) + "px";
+        window.document.getElementById("hitCommands").style["paddingRight"] = Math.floor(10 * scaleby) + "px";
+        window.document.getElementById("runCommands").style["paddingLeft"] = Math.floor(0 * scaleby) + "px";
+        window.document.getElementById("runCommands").style["paddingRight"] = Math.floor(20 * scaleby) + "px";
+        window.document.getElementById("interactCommands").style["paddingLeft"] = Math.floor(7 * scaleby) + "px";
+        window.document.getElementById("interactCommands").style["paddingRight"] = Math.floor(0 * scaleby) + "px";
+        window.document.getElementById("craftCommands").style["paddingLeft"] = Math.floor(5 * scaleby) + "px";
+        window.document.getElementById("craftCommands").style["paddingRight"] = Math.floor(18 * scaleby) + "px";
+        window.document.getElementById("mapCommands").style["paddingLeft"] = Math.floor(6 * scaleby) + "px";
+        window.document.getElementById("mapCommands").style["paddingRight"] = Math.floor(12 * scaleby) + "px";
         var NwvWV = window.document.getElementById("howtoplayTitle").style;
-        width = window.Math.floor(197 * scaleby) + "px";
-        height = window.Math.floor(23 * scaleby) + "px";
+        width = Math.floor(197 * scaleby) + "px";
+        height = Math.floor(23 * scaleby) + "px";
         NwvWV.width = width;
         NwvWV.height = height;
-        NwvWV.fontSize = window.Math.floor(16 * scaleby) + "px";
-        NwvWV["paddingTop"] = window.Math.floor(0 * scaleby) + "px";
-        NwvWV["paddingBottom"] = window.Math.floor(13 * scaleby) + "px";
-        NwvWV["marginBottom"] = window.Math.floor(6 * scaleby) + "px";
-        NwvWV["marginTop"] = window.Math.floor(0 * scaleby) + "px";
-        NwvWV["borderRadius"] = ((((((window.Math.floor(5 * scaleby) + "px ") + window.Math.floor(5 * scaleby)) + "px ") + window.Math.floor(0 * scaleby)) + "px ") + window.Math.floor(0 * scaleby)) + "px";
+        NwvWV.fontSize = Math.floor(16 * scaleby) + "px";
+        NwvWV["paddingTop"] = Math.floor(0 * scaleby) + "px";
+        NwvWV["paddingBottom"] = Math.floor(13 * scaleby) + "px";
+        NwvWV["marginBottom"] = Math.floor(6 * scaleby) + "px";
+        NwvWV["marginTop"] = Math.floor(0 * scaleby) + "px";
+        NwvWV["borderRadius"] = ((((((Math.floor(5 * scaleby) + "px ") + Math.floor(5 * scaleby)) + "px ") + Math.floor(0 * scaleby)) + "px ") + Math.floor(0 * scaleby)) + "px";
         var vNvVn = window.document.getElementById("howtoplayText").style;
-        vNvVn.fontSize = window.Math.floor(11 * scaleby) + "px";
-        vNvVn.MNmmV = window.Math.floor(6 * scaleby) + "px";
-        vNvVn.height = window.Math.floor(52 * scaleby) + "px";
+        vNvVn.fontSize = Math.floor(11 * scaleby) + "px";
+        vNvVn.MNmmV = Math.floor(6 * scaleby) + "px";
+        vNvVn.height = Math.floor(52 * scaleby) + "px";
         var NWmNv = window.document.getElementById("howtoplayCommands").style;
-        width = window.Math.floor(197 * scaleby) + "px";
-        height = window.Math.floor(23 * scaleby) + "px";
+        width = Math.floor(197 * scaleby) + "px";
+        height = Math.floor(23 * scaleby) + "px";
         NWmNv.width = width;
         NWmNv.height = height;
-        NWmNv.fontSize = window.Math.floor(16 * scaleby) + "px";
-        NWmNv["paddingTop"] = window.Math.floor(13 * scaleby) + "px";
-        NWmNv["paddingBottom"] = window.Math.floor(13 * scaleby) + "px";
-        NWmNv["marginBottom"] = window.Math.floor(6 * scaleby) + "px";
-        NWmNv["marginTop"] = window.Math.floor(11 * scaleby) + "px";
+        NWmNv.fontSize = Math.floor(16 * scaleby) + "px";
+        NWmNv["paddingTop"] = Math.floor(13 * scaleby) + "px";
+        NWmNv["paddingBottom"] = Math.floor(13 * scaleby) + "px";
+        NWmNv["marginBottom"] = Math.floor(6 * scaleby) + "px";
+        NWmNv["marginTop"] = Math.floor(11 * scaleby) + "px";
     };
 
     function draw() {
@@ -9441,7 +9233,7 @@ var Home = (function() {
         Render.world();
         if (transitionDuration > 0) {
             NNN = isWaiting(1 - (transitionDuration / reverseTransition));
-            if (reverseTransitionState === 1) NNN = 1 - window.Math.abs(NNN);
+            if (reverseTransitionState === 1) NNN = 1 - Math.abs(NNN);
             NNN = 1 - NNN;
         }
         ctx.globalAlpha = 0.3 * NNN;
@@ -9476,7 +9268,7 @@ var Home = (function() {
         privateServer.draw();
         vvmMm.draw();
         if (WnwMN.img === null) {
-            WnwMN.img = GUI.renderText((('2.9.30') + versionInf[1]), "'Viga', sans-serif", "#d6ddde", 24, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#2b3c3e", 8);
+            WnwMN.img = GUI.renderText((('0.' + versionInf[0]) + '.') + versionInf[1], "'Viga', sans-serif", "#d6ddde", 24, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#2b3c3e", 8);
             WnwMN.img.isLoaded = 1;
         }
         CanvasUtils.drawImageHd(WnwMN, (VmV.pos.x / scaleby) + 484.5, (VmV.pos.y / scaleby) + 124, 0, 0, 0, 1);
@@ -9662,7 +9454,7 @@ var Home = (function() {
                     var vvvNm = 0;
                     for (var i in Home.regions) {
                         if (i === Client.serverList[Home.survivalIndex][4]) {
-                            Home.serverTest = window.Math.floor(window.Math.random() * Home.regions[i].length);
+                            Home.serverTest = Math.floor(Math.random() * Home.regions[i].length);
                             vvvNm = j;
                             break;
                         }
@@ -9685,7 +9477,7 @@ var Home = (function() {
                     Home.survivalHtml = window.document.getElementById("serverList").innerHTML;
                     Home.survivalIndex = window.document.getElementById("servers").selectedIndex;
                     window.document.getElementById("serverList").innerHTML = Home.htmlGhoulServer;
-                    var vvvNm = window.Math.floor(window.Math.random() * 1);
+                    var vvvNm = Math.floor(Math.random() * 1);
                     window.document.getElementById("servers").selectedIndex = vvvNm;
                     update();
                 }
@@ -10239,51 +10031,51 @@ var Game = (function() {
             transitionY = canh;
             var transition = isWaiting(1 - (transitionDuration / reverseTransition));
             if (transition === 1) transitionDuration = 0;
-            if (reverseTransitionState === 1) transition = 1 - window.Math.abs(transition);
+            if (reverseTransitionState === 1) transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        gauges.pos.x = window.Math.floor(5 * scaleby) + transitionX;
-        gauges.pos.y = ((canh - window.Math.floor(174 * scaleby)) + window.Math.floor(-7 * scaleby)) + transitionY;
-        BACKGROUND_SETTBOX.pos.x = (canw2 - window.Math.floor(134 * scaleby)) + transitionX;
-        BACKGROUND_SETTBOX.pos.y = window.Math.max(0, canh2 - window.Math.floor(133 * scaleby)) + transitionY;
-        BACKGROUND_CHESTBOX.pos.x = (canw2 - window.Math.floor(81 * scaleby)) + transitionX;
-        BACKGROUND_CHESTBOX.pos.y = window.Math.max(0, canh2 - window.Math.floor(82 * scaleby)) + transitionY;
-        BACKGROUND_CRAFTBOX.pos.x = (canw2 - window.Math.floor(297 * scaleby)) + transitionX;
-        BACKGROUND_CRAFTBOX.pos.y = window.Math.max(0, canh2 - window.Math.floor(202 * scaleby)) + transitionY;
-        BACKGROUND_BIGMAP.pos.x = (canw2 - window.Math.floor(206 * scaleby)) + transitionX;
-        BACKGROUND_BIGMAP.pos.y = window.Math.max(0, canh2 - window.Math.floor(206 * scaleby)) + transitionY;
-        minimap.pos.x = window.Math.floor(5 * scaleby) - transitionX;
-        minimap.pos.y = window.Math.floor(5 * scaleby) - transitionY;
-        leaderboard.pos.x = ((canw - window.Math.floor(233 * scaleby)) + window.Math.floor(-6 * scaleby)) - transitionX;
-        leaderboard.pos.y = window.Math.floor(5 * scaleby) - transitionY;
-        teambox.pos.x = (canw2 - window.Math.floor(258 * scaleby)) - transitionX;
-        teambox.pos.y = window.Math.max(0, canh2 - window.Math.floor(137 * scaleby)) - transitionY;
-        teammemberbox.pos.x = (canw2 - window.Math.floor(256 * scaleby)) - transitionX;
-        teammemberbox.pos.y = window.Math.max(0, canh2 - window.Math.floor(75 * scaleby)) - transitionY;
-        fullscreenimg.pos.x = minimap.pos.x + window.Math.floor(126 * scaleby);
+        gauges.pos.x = Math.floor(5 * scaleby) + transitionX;
+        gauges.pos.y = ((canh - Math.floor(174 * scaleby)) + Math.floor(-7 * scaleby)) + transitionY;
+        BACKGROUND_SETTBOX.pos.x = (canw2 - Math.floor(134 * scaleby)) + transitionX;
+        BACKGROUND_SETTBOX.pos.y = Math.max(0, canh2 - Math.floor(133 * scaleby)) + transitionY;
+        BACKGROUND_CHESTBOX.pos.x = (canw2 - Math.floor(81 * scaleby)) + transitionX;
+        BACKGROUND_CHESTBOX.pos.y = Math.max(0, canh2 - Math.floor(82 * scaleby)) + transitionY;
+        BACKGROUND_CRAFTBOX.pos.x = (canw2 - Math.floor(297 * scaleby)) + transitionX;
+        BACKGROUND_CRAFTBOX.pos.y = Math.max(0, canh2 - Math.floor(202 * scaleby)) + transitionY;
+        BACKGROUND_BIGMAP.pos.x = (canw2 - Math.floor(206 * scaleby)) + transitionX;
+        BACKGROUND_BIGMAP.pos.y = Math.max(0, canh2 - Math.floor(206 * scaleby)) + transitionY;
+        minimap.pos.x = Math.floor(5 * scaleby) - transitionX;
+        minimap.pos.y = Math.floor(5 * scaleby) - transitionY;
+        leaderboard.pos.x = ((canw - Math.floor(233 * scaleby)) + Math.floor(-6 * scaleby)) - transitionX;
+        leaderboard.pos.y = Math.floor(5 * scaleby) - transitionY;
+        teambox.pos.x = (canw2 - Math.floor(258 * scaleby)) - transitionX;
+        teambox.pos.y = Math.max(0, canh2 - Math.floor(137 * scaleby)) - transitionY;
+        teammemberbox.pos.x = (canw2 - Math.floor(256 * scaleby)) - transitionX;
+        teammemberbox.pos.y = Math.max(0, canh2 - Math.floor(75 * scaleby)) - transitionY;
+        fullscreenimg.pos.x = minimap.pos.x + Math.floor(126 * scaleby);
         fullscreenimg.pos.y = minimap.pos.y;
-        craftbutton.pos.x = fullscreenimg.pos.x + window.Math.floor(50 * scaleby);
+        craftbutton.pos.x = fullscreenimg.pos.x + Math.floor(50 * scaleby);
         craftbutton.pos.y = fullscreenimg.pos.y;
         settingsimg.pos.x = fullscreenimg.pos.x;
-        settingsimg.pos.y = fullscreenimg.pos.y + window.Math.floor(44.5 * scaleby);
+        settingsimg.pos.y = fullscreenimg.pos.y + Math.floor(44.5 * scaleby);
         minimapbutt.pos.x = settingsimg.pos.x;
-        minimapbutt.pos.y = settingsimg.pos.y + window.Math.floor(44.5 * scaleby);
+        minimapbutt.pos.y = settingsimg.pos.y + Math.floor(44.5 * scaleby);
         teambutt.pos.x = minimap.pos.x;
-        teambutt.pos.y = minimap.pos.y + window.Math.floor(127 * scaleby);
-        leaderboardbutt.pos.x = ((canw - window.Math.floor(34 * scaleby)) + window.Math.floor(-7 * scaleby)) - transitionX;
-        leaderboardbutt.pos.y = window.Math.floor(5 * scaleby) - transitionY;
+        teambutt.pos.y = minimap.pos.y + Math.floor(127 * scaleby);
+        leaderboardbutt.pos.x = ((canw - Math.floor(34 * scaleby)) + Math.floor(-7 * scaleby)) - transitionX;
+        leaderboardbutt.pos.y = Math.floor(5 * scaleby) - transitionY;
         leaderboardbutt2.pos.x = leaderboardbutt.pos.x;
         leaderboardbutt2.pos.y = leaderboardbutt.pos.y;
-        NWmmW.x = (canw2 - window.Math.floor(150 * scaleby)) + transitionX;
+        NWmmW.x = (canw2 - Math.floor(150 * scaleby)) + transitionX;
         mnnNv.left = NWmmW.x + "px";
-        NWmmW.y = (window.Math.max(0, canh2 - 12) + window.Math.floor(150 * scaleby)) + transitionY;
+        NWmmW.y = (Math.max(0, canh2 - 12) + Math.floor(150 * scaleby)) + transitionY;
         mnnNv.top = NWmmW.y + "px";
         var wvnVv = window.document.getElementById("chatInput").style;
-        var width = window.Math.floor(250 * scaleby);
-        var height = window.Math.floor(20 * scaleby);
-        var MMM = window.Math.floor(canw2 - (width / 2)) + "px";
-        var _top = window.Math.floor(((canh2 - (height / 2)) + (scaleby * 85)) + transitionY) + "px";
+        var width = Math.floor(250 * scaleby);
+        var height = Math.floor(20 * scaleby);
+        var MMM = Math.floor(canw2 - (width / 2)) + "px";
+        var _top = Math.floor(((canh2 - (height / 2)) + (scaleby * 85)) + transitionY) + "px";
         height = height + "px";
         width = width + "px";
         mnnNv.width = width;
@@ -10292,7 +10084,7 @@ var Game = (function() {
         mnnNv.top = _top;
         wvnVv.width = width;
         wvnVv.height = height;
-        wvnVv.fontSize = window.Math.floor(14 * scaleby) + "px";
+        wvnVv.fontSize = Math.floor(14 * scaleby) + "px";
     };
 
     function draw() {
@@ -10338,7 +10130,7 @@ var Game = (function() {
                 var offsetY = canh2ns + (canw4ns / 4);
                 CanvasUtils.circle(ctx, offsetX, offsetY, 60);
                 CanvasUtils.drawPath(ctx, "#000000");
-                CanvasUtils.circle(ctx, offsetX + ((window.Math.cos(MWVNw) * NVNwm) * scaleby), offsetY + ((window.Math.sin(MWVNw) * NVNwm) * scaleby), 30);
+                CanvasUtils.circle(ctx, offsetX + ((Math.cos(MWVNw) * NVNwm) * scaleby), offsetY + ((Math.sin(MWVNw) * NVNwm) * scaleby), 30);
                 CanvasUtils.drawPath(ctx, "#FFFFFF");
                 ctx.globalAlpha = 1;
             }
@@ -10348,7 +10140,7 @@ var Game = (function() {
                 var offsetY = canh2ns + (canw4ns / 4);
                 CanvasUtils.circle(ctx, offsetX, offsetY, 60);
                 CanvasUtils.drawPath(ctx, "#000000");
-                CanvasUtils.circle(ctx, offsetX + ((window.Math.cos(Mouse.angle) * 25) * scaleby), offsetY + ((window.Math.sin(Mouse.angle) * 25) * scaleby), 30);
+                CanvasUtils.circle(ctx, offsetX + ((Math.cos(Mouse.angle) * 25) * scaleby), offsetY + ((Math.sin(Mouse.angle) * 25) * scaleby), 30);
                 CanvasUtils.drawPath(ctx, "#FFFFFF");
                 ctx.globalAlpha = 1;
             }
@@ -11112,11 +10904,8 @@ var Game = (function() {
             if (chatvisible === 1) {
                 if (chatinput.value.length > 0) {
                     if ((World.PLAYER.admin === 1) && (chatinput.value[0] === '!')) {
-                        if (chatinput.value === '!pos') World.players[World.PLAYER.id].text.push((window.Math.floor(World.PLAYER.x / 100) + ":") + window.Math.floor(World.PLAYER.y / 100));
-                        if (chatinput.value === '!new') {
-                            Client.newToken(chatinput.value);
-                            Client.closeClient();
-                        }
+                        if (chatinput.value === '!pos') World.players[World.PLAYER.id].text.push((Math.floor(World.PLAYER.x / 100) + ":") + Math.floor(World.PLAYER.y / 100));
+                        if (chatinput.value === '!new') Client.newToken(chatinput.value);
                         if (chatinput.value === '!afk') Client.sendAfk(chatinput.value);
                         if (chatinput.value === '!path')  { if (!pathFinder)   pathFinder = true;  else pathFinder = false; }
                         else {
@@ -11132,7 +10921,7 @@ var Game = (function() {
                         Client.sendWSmsg(chatinput.value)
                 } else {
                         var delay = Client.sendChatMessage(chatinput.value);
-                        if (delay !== 0) World.players[World.PLAYER.id].text.push(chatinput.value);
+                        if (delay !== 0) World.players[World.PLAYER.id].text.push(("I am muted during " + Math.floor(delay / 1000)) + " seconds");
                         else World.players[World.PLAYER.id].text.push(chatinput.value);
                     }
                 }
@@ -11239,8 +11028,8 @@ var Game = (function() {
                 }
             }
             if ((World.PLAYER.drag.begin === 0) && (NmW === 0)) {
-                var sx = window.Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
-                var sy = window.Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
+                var sx = Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
+                var sy = Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
                 switch (World.PLAYER.interaction) {
                     case 2:
                         if (((((World.PLAYER.extraLoot === 1) && (sx > Game.xInteract2)) && (sy > Game.yInteract2)) && (sx < (Game.xInteract2 + Game.widthInteract))) && (sy < (Game.yInteract2 + Game.heightInteract))) {
@@ -11266,7 +11055,7 @@ var Game = (function() {
                     if (sx < canw2) {
                         var MVM = 30 * scaleby;
                         MWVNw = Math2d.angle(canw2 - WMm, canh2 + nmV, sx, sy);
-                        NVNwm = window.Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
+                        NVNwm = Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
                         if (sx < ((canw2 - WMm) - MVM)) {
                             mWM |= 1;
                             keyboard.charCode = 37;
@@ -11320,8 +11109,8 @@ var Game = (function() {
     };
 
     function touchEnd(event) {
-        var sx = window.Math.floor(event.changedTouches[0].clientX * CanvasUtils.options.ratioX);
-        var sy = window.Math.floor(event.changedTouches[0].clientY * CanvasUtils.options.ratioY);
+        var sx = Math.floor(event.changedTouches[0].clientX * CanvasUtils.options.ratioX);
+        var sy = Math.floor(event.changedTouches[0].clientY * CanvasUtils.options.ratioY);
         if (nvnNv === 1) nvnNv = 0;
         else if (NmW === 1) mouseUp(mouseX);
         else if ((vmWNW === 1) && (sx >= canw2)) {
@@ -11378,8 +11167,8 @@ var Game = (function() {
                 }
             }
             if ((World.PLAYER.drag.begin === 0) && (NmW === 0)) {
-                var sx = window.Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
-                var sy = window.Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
+                var sx = Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
+                var sy = Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
                 if (sy < (canh - (70 * scaleby))) {
                     var WMm = canw4 * 1.5;
                     var nmV = canw4 / 4;
@@ -11388,7 +11177,7 @@ var Game = (function() {
                         var VNM = 0;
                         var MVM = 30 * scaleby;
                         MWVNw = Math2d.angle(canw2 - WMm, canh2 + nmV, sx, sy);
-                        NVNwm = window.Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
+                        NVNwm = Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
                         if (sx < ((canw2 - WMm) - MVM)) VNM |= 1;
                         else if (sx > ((canw2 - WMm) + MVM)) VNM |= 2;
                         if (sy < ((canh2 + nmV) + -MVM)) VNM |= 4;
@@ -11555,7 +11344,7 @@ var Score = (function() {
         if ((WwwvV === null) || (VwvVv !== World.PLAYER.level)) {
             VwvVv = World.PLAYER.level;
             WwwvV = GUI.renderText(VwvVv + "", "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
-            wNnwN = GUI.renderText(window.Math.floor(VwvVv / 2), "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
+            wNnwN = GUI.renderText(Math.floor(VwvVv / 2), "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
             WMwMN.img = WwwvV;
             WMwMN.img.isLoaded = 1;
             nwWMv.img = wNnwN;
@@ -11629,7 +11418,7 @@ var Score = (function() {
         for (var i = 0; i < World.PLAYER.inventory.length; i++) {
             for (var j = 0; j < 4; j++) World.PLAYER.inventory[i][j] = 0;
         }
-        var MWMwV = KIT[window.Math.min(KIT.length - 1, World.PLAYER.level)];
+        var MWMwV = KIT[Math.min(KIT.length - 1, World.PLAYER.level)];
         for (var i = 0; i < MWMwV.length; i++) {
             var item = MWMwV[i];
             if (item.id !== 0) Game.inventory[i].setImages(INVENTORY[item.id].itemButton.src, INVENTORY[item.id].itemButton.img);
@@ -11664,20 +11453,20 @@ var Score = (function() {
             transitionY = canh;
             var transition = isWaiting(1 - (transitionDuration / reverseTransition));
             if (transition === 1) transitionDuration = 0;
-            if (reverseTransitionState === 1) transition = 1 - window.Math.abs(transition);
+            if (reverseTransitionState === 1) transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        mNw.pos.x = (canw2 - window.Math.floor(270 * scaleby)) - transitionX;
-        mNw.pos.y = window.Math.max(0, (canh2 - window.Math.floor(162 * scaleby)) + window.Math.floor(-135 * scaleby)) - transitionY;
-        playagainbutt.pos.x = ((canw2 - window.Math.floor(61 * scaleby)) + window.Math.floor(-100 * scaleby)) - transitionX;
-        playagainbutt.pos.y = window.Math.max(0, (canh2 - window.Math.floor(17 * scaleby)) + window.Math.floor(-35 * scaleby)) - transitionY;
-        vWv.pos.x = ((canw2 - window.Math.floor(99 * scaleby)) + window.Math.floor(100 * scaleby)) - transitionX;
+        mNw.pos.x = (canw2 - Math.floor(270 * scaleby)) - transitionX;
+        mNw.pos.y = Math.max(0, (canh2 - Math.floor(162 * scaleby)) + Math.floor(-135 * scaleby)) - transitionY;
+        playagainbutt.pos.x = ((canw2 - Math.floor(61 * scaleby)) + Math.floor(-100 * scaleby)) - transitionX;
+        playagainbutt.pos.y = Math.max(0, (canh2 - Math.floor(17 * scaleby)) + Math.floor(-35 * scaleby)) - transitionY;
+        vWv.pos.x = ((canw2 - Math.floor(99 * scaleby)) + Math.floor(100 * scaleby)) - transitionX;
         vWv.pos.y = playagainbutt.pos.y;
-        var mVvwv = window.Math.min(scaleby, 1);
-        window.document.getElementById("trevda").style.top = window.Math.floor((canh2 - 125) + (140 * mVvwv)) + "px";
+        var mVvwv = Math.min(scaleby, 1);
+        window.document.getElementById("trevda").style.top = Math.floor((canh2 - 125) + (140 * mVvwv)) + "px";
         window.document.getElementById("trevda").style.transform = ("scale(" + mVvwv) + ")";
-        window.document.getElementById("trevda").style.left = window.Math.floor(canw2 - (325 * mVvwv)) + "px";
+        window.document.getElementById("trevda").style.left = Math.floor(canw2 - (325 * mVvwv)) + "px";
     };
 
     function draw() {
@@ -11686,7 +11475,7 @@ var Score = (function() {
         Render.world();
         if (transitionDuration > 0) {
             NNN = isWaiting(1 - (transitionDuration / reverseTransition));
-            if (reverseTransitionState === 1) NNN = 1 - window.Math.abs(NNN);
+            if (reverseTransitionState === 1) NNN = 1 - Math.abs(NNN);
             NNN = 1 - NNN;
         }
         ctx.globalAlpha = 0.3 * NNN;
@@ -11699,8 +11488,8 @@ var Score = (function() {
         Render.alertServer();
         AudioManager.scheduler();
         if (waitAds > 0) {
-            waitAds = window.Math.max(0, waitAds - delta);
-            CanvasUtils.drawImageHd(WAITADS[window.Math.floor(waitAds / 1000)], (playagainbutt.pos.x / scaleby) + 61.5, (playagainbutt.pos.y / scaleby) + 17.75, 0, 0, 0, 1);
+            waitAds = Math.max(0, waitAds - delta);
+            CanvasUtils.drawImageHd(WAITADS[Math.floor(waitAds / 1000)], (playagainbutt.pos.x / scaleby) + 61.5, (playagainbutt.pos.y / scaleby) + 17.75, 0, 0, 0, 1);
         } else playagainbutt.draw();
     };
 
@@ -11857,15 +11646,15 @@ var Rank = (function() {
         var wY_Scale = offsetY / scaleby;
         if ((NmwnM === null) || (mvNVM !== World.playerAlive)) {
             mvNVM = World.playerAlive;
-            NmwnM = GUI.renderText("#" + window.Math.max(mvNVM, 1), "'Viga', sans-serif", "#FFFFFF", 60, 140, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
+            NmwnM = GUI.renderText("#" + Math.max(mvNVM, 1), "'Viga', sans-serif", "#FFFFFF", 60, 140, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
             mmvMV.img = NmwnM;
             mmvMV.img.isLoaded = 1;
         }
         CanvasUtils.drawImageHd(mmvMV, wX_Scale + 207, wY_Scale + 93, 0, 0, 0, 1);
         if ((VmvNV === null) || (lastTime !== World.PLAYER.timePlayed)) {
             lastTime = World.PLAYER.timePlayed;
-            var vMWwM = window.Math.floor((window.Date.now() - World.PLAYER.timePlayed) / 1000);
-            var wWvWM = window.Math.floor(vMWwM / 60);
+            var vMWwM = Math.floor((window.Date.now() - World.PLAYER.timePlayed) / 1000);
+            var wWvWM = Math.floor(vMWwM / 60);
             var NNvMn = vMWwM % 60;
             VmvNV = GUI.renderText((((((wWvWM < 10) ? "0" : "") + wWvWM) + ":") + ((NNvMn < 10) ? "0" : "")) + NNvMn, "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
             vnvvM.img = VmvNV;
@@ -11939,18 +11728,18 @@ var Rank = (function() {
             transitionY = canh;
             var transition = isWaiting(1 - (transitionDuration / reverseTransition));
             if (transition === 1) transitionDuration = 0;
-            if (reverseTransitionState === 1) transition = 1 - window.Math.abs(transition);
+            if (reverseTransitionState === 1) transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        mNw.pos.x = (canw2 - window.Math.floor(207 * scaleby)) - transitionX;
-        mNw.pos.y = window.Math.max(0, (canh2 - window.Math.floor(103 * scaleby)) + window.Math.floor(-135 * scaleby)) - transitionY;
-        playagainbutt.pos.x = ((canw2 - window.Math.floor(61 * scaleby)) + window.Math.floor(-100 * scaleby)) - transitionX;
-        playagainbutt.pos.y = window.Math.max(0, (canh2 - window.Math.floor(17 * scaleby)) + window.Math.floor(-70 * scaleby)) - transitionY;
-        vWv.pos.x = ((canw2 - window.Math.floor(99 * scaleby)) + window.Math.floor(70 * scaleby)) - transitionX;
+        mNw.pos.x = (canw2 - Math.floor(207 * scaleby)) - transitionX;
+        mNw.pos.y = Math.max(0, (canh2 - Math.floor(103 * scaleby)) + Math.floor(-135 * scaleby)) - transitionY;
+        playagainbutt.pos.x = ((canw2 - Math.floor(61 * scaleby)) + Math.floor(-100 * scaleby)) - transitionX;
+        playagainbutt.pos.y = Math.max(0, (canh2 - Math.floor(17 * scaleby)) + Math.floor(-70 * scaleby)) - transitionY;
+        vWv.pos.x = ((canw2 - Math.floor(99 * scaleby)) + Math.floor(70 * scaleby)) - transitionX;
         vWv.pos.y = playagainbutt.pos.y;
         var mVvwv = scaleby;
-        window.document.getElementById("trevda").style.top = window.Math.floor((canh2 - 125) + (130 * mVvwv)) + "px";
+        window.document.getElementById("trevda").style.top = Math.floor((canh2 - 125) + (130 * mVvwv)) + "px";
         window.document.getElementById("trevda").style.transform = ("scale(" + mVvwv) + ")";
     };
 
@@ -11960,7 +11749,7 @@ var Rank = (function() {
         Render.world();
         if (transitionDuration > 0) {
             NNN = isWaiting(1 - (transitionDuration / reverseTransition));
-            if (reverseTransitionState === 1) NNN = 1 - window.Math.abs(NNN);
+            if (reverseTransitionState === 1) NNN = 1 - Math.abs(NNN);
             NNN = 1 - NNN;
         }
         ctx.globalAlpha = 0.3 * NNN;
@@ -11973,8 +11762,8 @@ var Rank = (function() {
         Render.alertServer();
         AudioManager.scheduler();
         if (waitAds > 0) {
-            waitAds = window.Math.max(0, waitAds - delta);
-            CanvasUtils.drawImageHd(WAITADS[window.Math.floor(waitAds / 1000)], (playagainbutt.pos.x / scaleby) + 61.5, (playagainbutt.pos.y / scaleby) + 17.75, 0, 0, 0, 1);
+            waitAds = Math.max(0, waitAds - delta);
+            CanvasUtils.drawImageHd(WAITADS[Math.floor(waitAds / 1000)], (playagainbutt.pos.x / scaleby) + 61.5, (playagainbutt.pos.y / scaleby) + 17.75, 0, 0, 0, 1);
         } else playagainbutt.draw();
     };
 
@@ -12240,12 +12029,12 @@ var Editor = (function() {
                 type = __ENTITIE_BUILD_GROUND__;
                 break;
         }
-        nWMWn(1, type, offsetX, offsetY, rotation, 1 + ((building.subtype === 0) ? 0 : (subtype << 5)), building.id);
+        nWMWn(1, type, offsetX, offsetY, rotation, 1, building.id, (building.subtype === 0) ? 0 : subtype);
     };
 
-    function nWMWn(pid, type, offsetX, offsetY, rotation, state, subtype) {
+    function nWMWn(pid, type, offsetX, offsetY, rotation, state, id, subtype) {
         var entity = Entitie.get(pid, vmV, vmV, type);
-        setEntitie(entity, pid, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (subtype << 7) + (rotation << 5), 0, state);
+        setEntitie(entity, pid, vmV, vmV, type, offsetX, offsetY, offsetX, offsetY, (id << 7) + (rotation << 5), 0, state, subtype);
         var update = ENTITIES[type].update;
         if (update !== window.undefined) update(entity, offsetX, offsetY);
         vmV++;
@@ -12305,7 +12094,7 @@ var Editor = (function() {
             }
         }
     };
-    var NnMMn = window.Math.sqrt(2) / 2;
+    var NnMMn = Math.sqrt(2) / 2;
 
     function nNvvV() {
         var move = 0;
@@ -12322,8 +12111,8 @@ var Editor = (function() {
             else if (move & 2) PLAYER.rx = PLAYER.x + WvvVn;
             if (move & 8) PLAYER.ry = PLAYER.y - WvvVn;
             else if (move & 4) PLAYER.ry = PLAYER.y + WvvVn;
-            PLAYER.rx = window.Math.max(0, window.Math.min(PLAYER.rx, MapManager.width * 100));
-            PLAYER.ry = window.Math.max(0, window.Math.min(PLAYER.ry, MapManager.height * 100));
+            PLAYER.rx = Math.max(0, Math.min(PLAYER.rx, MapManager.width * 100));
+            PLAYER.ry = Math.max(0, Math.min(PLAYER.ry, MapManager.height * 100));
             PLAYER.nx = PLAYER.rx;
             PLAYER.ny = PLAYER.ry;
         }
@@ -12336,7 +12125,7 @@ var Editor = (function() {
         for (var i = 0; i < NWw; i++) {
             var wm = Wnw[i];
             wm.pos.x = offsetX + ((i % 8) * MVM);
-            wm.pos.y = offsetY + (window.Math.floor(i / 8) * MVM);
+            wm.pos.y = offsetY + (Math.floor(i / 8) * MVM);
             wm.draw();
         }
     };
@@ -12497,44 +12286,44 @@ var Editor = (function() {
             transitionY = canh;
             var transition = isWaiting(1 - (transitionDuration / reverseTransition));
             if (transition === 1) transitionDuration = 0;
-            if (reverseTransitionState === 1) transition = 1 - window.Math.abs(transition);
+            if (reverseTransitionState === 1) transition = 1 - Math.abs(transition);
             transitionX *= transition;
             transitionY *= transition;
         }
-        BACKGROUND_SETTBOX.pos.x = (canw2 - window.Math.floor(134 * scaleby)) + transitionX;
-        BACKGROUND_SETTBOX.pos.y = window.Math.max(0, canh2 - window.Math.floor(133 * scaleby)) + transitionY;
-        BACKGROUND_BIGMAP.pos.x = (canw2 - window.Math.floor(206 * scaleby)) + transitionX;
-        BACKGROUND_BIGMAP.pos.y = window.Math.max(0, canh2 - window.Math.floor(206 * scaleby)) + transitionY;
-        minimap.pos.x = window.Math.floor(5 * scaleby) - transitionX;
-        minimap.pos.y = window.Math.floor(5 * scaleby) - transitionY;
-        editorScreen.pos.x      = minimap.pos.x + window.Math.floor(126 * scaleby);
+        BACKGROUND_SETTBOX.pos.x = (canw2 - Math.floor(134 * scaleby)) + transitionX;
+        BACKGROUND_SETTBOX.pos.y = Math.max(0, canh2 - Math.floor(133 * scaleby)) + transitionY;
+        BACKGROUND_BIGMAP.pos.x = (canw2 - Math.floor(206 * scaleby)) + transitionX;
+        BACKGROUND_BIGMAP.pos.y = Math.max(0, canh2 - Math.floor(206 * scaleby)) + transitionY;
+        minimap.pos.x = Math.floor(5 * scaleby) - transitionX;
+        minimap.pos.y = Math.floor(5 * scaleby) - transitionY;
+        editorScreen.pos.x      = minimap.pos.x + Math.floor(126 * scaleby);
         editorScreen.pos.y      = minimap.pos.y;
         editorOptions.pos.x     = editorScreen.pos.x;
-        editorOptions.pos.y     = editorScreen.pos.y + window.Math.floor(44.5 * scaleby);
+        editorOptions.pos.y     = editorScreen.pos.y + Math.floor(44.5 * scaleby);
         editorMap.pos.x         = editorOptions.pos.x;
-        editorMap.pos.y         = editorOptions.pos.y + window.Math.floor(44.5 * scaleby);
-        editorLogic.pos.x       = ((canw - window.Math.floor(67 * scaleby)) + window.Math.floor(-5 * scaleby)) - transitionX;
-        editorLogic.pos.y       = window.Math.floor(5 * scaleby) - transitionY;
-        editorExplosions.pos.x  = editorLogic.pos.x + window.Math.floor(-70 * scaleby);
-        editorExplosions.pos.y  = window.Math.floor(5 * scaleby) - transitionY;
-        editorRoad.pos.x        = editorExplosions.pos.x + window.Math.floor(-70 * scaleby);
-        editorRoad.pos.y        = window.Math.floor(5 * scaleby) - transitionY;
-        editorFurniture.pos.x   = editorRoad.pos.x + window.Math.floor(-70 * scaleby);
-        editorFurniture.pos.y   = window.Math.floor(5 * scaleby) - transitionY;
-        editorBuildings.pos.x   = editorFurniture.pos.x + window.Math.floor(-70 * scaleby);
-        editorBuildings.pos.y   = window.Math.floor(5 * scaleby) - transitionY;
-        editorZoomIn.pos.x      = window.Math.floor(5 * scaleby);
-        editorZoomIn.pos.y      = (canh - window.Math.floor(46.5 * scaleby)) + window.Math.floor(-5 * scaleby);
-        editorZoomOut.pos.x     = editorZoomIn.pos.x + window.Math.floor(50 * scaleby);
-        editorZoomOut.pos.y     = (canh - window.Math.floor(46.5 * scaleby)) + window.Math.floor(-5 * scaleby);
-        editorDelete.pos.x      = minimap.pos.x + window.Math.floor(89 * scaleby);
-        editorDelete.pos.y      = minimap.pos.y + window.Math.floor(126 * scaleby);
-        editorImport.pos.x      = (canw - window.Math.floor(46.5 * scaleby)) + window.Math.floor(-5 * scaleby);
-        editorImport.pos.y      = (canh - window.Math.floor(46.5 * scaleby)) + window.Math.floor(-5 * scaleby);
-        editorCopy.pos.x        = editorImport.pos.x + window.Math.floor(-50 * scaleby);
-        editorCopy.pos.y        = (canh - window.Math.floor(46.5 * scaleby)) + window.Math.floor(-5 * scaleby);
+        editorMap.pos.y         = editorOptions.pos.y + Math.floor(44.5 * scaleby);
+        editorLogic.pos.x       = ((canw - Math.floor(67 * scaleby)) + Math.floor(-5 * scaleby)) - transitionX;
+        editorLogic.pos.y       = Math.floor(5 * scaleby) - transitionY;
+        editorExplosions.pos.x  = editorLogic.pos.x + Math.floor(-70 * scaleby);
+        editorExplosions.pos.y  = Math.floor(5 * scaleby) - transitionY;
+        editorRoad.pos.x        = editorExplosions.pos.x + Math.floor(-70 * scaleby);
+        editorRoad.pos.y        = Math.floor(5 * scaleby) - transitionY;
+        editorFurniture.pos.x   = editorRoad.pos.x + Math.floor(-70 * scaleby);
+        editorFurniture.pos.y   = Math.floor(5 * scaleby) - transitionY;
+        editorBuildings.pos.x   = editorFurniture.pos.x + Math.floor(-70 * scaleby);
+        editorBuildings.pos.y   = Math.floor(5 * scaleby) - transitionY;
+        editorZoomIn.pos.x      = Math.floor(5 * scaleby);
+        editorZoomIn.pos.y      = (canh - Math.floor(46.5 * scaleby)) + Math.floor(-5 * scaleby);
+        editorZoomOut.pos.x     = editorZoomIn.pos.x + Math.floor(50 * scaleby);
+        editorZoomOut.pos.y     = (canh - Math.floor(46.5 * scaleby)) + Math.floor(-5 * scaleby);
+        editorDelete.pos.x      = minimap.pos.x + Math.floor(89 * scaleby);
+        editorDelete.pos.y      = minimap.pos.y + Math.floor(126 * scaleby);
+        editorImport.pos.x      = (canw - Math.floor(46.5 * scaleby)) + Math.floor(-5 * scaleby);
+        editorImport.pos.y      = (canh - Math.floor(46.5 * scaleby)) + Math.floor(-5 * scaleby);
+        editorCopy.pos.x        = editorImport.pos.x + Math.floor(-50 * scaleby);
+        editorCopy.pos.y        = (canh - Math.floor(46.5 * scaleby)) + Math.floor(-5 * scaleby);
         editorHome.pos.x        = minimap.pos.x;
-        editorHome.pos.y        = minimap.pos.y + window.Math.floor(126 * scaleby);
+        editorHome.pos.y        = minimap.pos.y + Math.floor(126 * scaleby);
     };
 
     function draw() {
@@ -12572,7 +12361,7 @@ var Editor = (function() {
                 var offsetY = canh2ns + (canw4ns / 4);
                 CanvasUtils.circle(ctx, offsetX, offsetY, 60);
                 CanvasUtils.drawPath(ctx, "#000000");
-                CanvasUtils.circle(ctx, offsetX + ((window.Math.cos(MWVNw) * NVNwm) * scaleby), offsetY + ((window.Math.sin(MWVNw) * NVNwm) * scaleby), 30);
+                CanvasUtils.circle(ctx, offsetX + ((Math.cos(MWVNw) * NVNwm) * scaleby), offsetY + ((Math.sin(MWVNw) * NVNwm) * scaleby), 30);
                 CanvasUtils.drawPath(ctx, "#FFFFFF");
                 ctx.globalAlpha = 1;
             }
@@ -12582,7 +12371,7 @@ var Editor = (function() {
                 var offsetY = canh2ns + (canw4ns / 4);
                 CanvasUtils.circle(ctx, offsetX, offsetY, 60);
                 CanvasUtils.drawPath(ctx, "#000000");
-                CanvasUtils.circle(ctx, offsetX + ((window.Math.cos(Mouse.angle) * 25) * scaleby), offsetY + ((window.Math.sin(Mouse.angle) * 25) * scaleby), 30);
+                CanvasUtils.circle(ctx, offsetX + ((Math.cos(Mouse.angle) * 25) * scaleby), offsetY + ((Math.sin(Mouse.angle) * 25) * scaleby), 30);
                 CanvasUtils.drawPath(ctx, "#FFFFFF");
                 ctx.globalAlpha = 1;
             }
@@ -13021,15 +12810,15 @@ var Editor = (function() {
         for (var wVV = 0; wVV < event.touches.length; wVV++) {
             Mouse.touchToMouseEvent(mouseX, event, event.touches[wVV]);
             if (NmW === 0) {
-                var sx = window.Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
-                var sy = window.Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
+                var sx = Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
+                var sy = Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
                 if (sy < (canh - (70 * scaleby))) {
                     var WMm = canw4 * 1.5;
                     var nmV = canw4 / 4;
                     if (sx < canw2) {
                         var MVM = 30 * scaleby;
                         MWVNw = Math2d.angle(canw2 - WMm, canh2 + nmV, sx, sy);
-                        NVNwm = window.Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
+                        NVNwm = Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
                         if (sx < ((canw2 - WMm) - MVM)) {
                             mWM |= 1;
                             keyboard.charCode = 37;
@@ -13085,8 +12874,8 @@ var Editor = (function() {
     function touchEnd(event) {};
 
     function touchCancel(event) {
-        var sx = window.Math.floor(event.changedTouches[0].clientX * CanvasUtils.options.ratioX);
-        var sy = window.Math.floor(event.changedTouches[0].clientY * CanvasUtils.options.ratioY);
+        var sx = Math.floor(event.changedTouches[0].clientX * CanvasUtils.options.ratioX);
+        var sy = Math.floor(event.changedTouches[0].clientY * CanvasUtils.options.ratioY);
         if (nvnNv === 1) nvnNv = 0;
         else if (NmW === 1) mouseUp(mouseX);
         else if ((vmWNW === 1) && (sx >= canw2)) {
@@ -13125,8 +12914,8 @@ var Editor = (function() {
         for (var wVV = 0; wVV < event.touches.length; wVV++) {
             Mouse.touchToMouseEvent(mouseX, event, event.touches[wVV]);
             if ((World.PLAYER.drag.begin === 0) && (NmW === 0)) {
-                var sx = window.Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
-                var sy = window.Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
+                var sx = Math.floor(mouseX.clientX * CanvasUtils.options.ratioX);
+                var sy = Math.floor(mouseX.clientY * CanvasUtils.options.ratioY);
                 if (sy < (canh - (70 * scaleby))) {
                     var WMm = canw4 * 1.5;
                     var nmV = canw4 / 4;
@@ -13135,7 +12924,7 @@ var Editor = (function() {
                         var VNM = 0;
                         var MVM = 30 * scaleby;
                         MWVNw = Math2d.angle(canw2 - WMm, canh2 + nmV, sx, sy);
-                        NVNwm = window.Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
+                        NVNwm = Math.min(Math2d.distance(sx, sy, canw2 - WMm, canh2 + nmV), 25);
                         if (sx < ((canw2 - WMm) - MVM)) VNM |= 1;
                         else if (sx > ((canw2 - WMm) + MVM)) VNM |= 2;
                         if (sy < ((canh2 + nmV) + -MVM)) VNM |= 4;
@@ -13602,8 +13391,8 @@ try {
         var Mvvwv = 500;
         var mVmWm = 256;
         var mMmvV = 500;
-        var WWn = window.Math.floor(mVmWm / 2);
-        var nWWwM = window.Math.floor(WWn / 2);
+        var WWn = Math.floor(mVmWm / 2);
+        var nWWwM = Math.floor(WWn / 2);
         var IMG_ALERT = "img/alert";
         var Vwwmw = 699;
         var nvnwM = 738;
@@ -13615,9 +13404,9 @@ try {
         var Mvnwm = 3000;
         var mmWWw = 500;
         var WWMnN = 2500;
-        var PI2 = window.Math.PI * 2;
-        var PIby2 = window.Math.PI / 2;
-        var mWvNn = window.Math.PI / World.__DAY__;
+        var PI2 = Math.PI * 2;
+        var PIby2 = Math.PI / 2;
+        var mWvNn = Math.PI / World.__DAY__;
         var LEFT = 1;
         var RIGHT = 2;
         var TOP = 4;
@@ -13869,8 +13658,8 @@ try {
                 isLoaded: 0
             }
         };
-        var nearestDistance = 36000;
-        var distance12k = 36000;
+        var nearestDistance = 12000;
+        var distance12k = 12000;
         var wVMNN = [];
         for (i = 0; i < 10; i++) {
             wVMNN[i] = [];
@@ -14279,11 +14068,11 @@ try {
             VMV.wallFrame = frameId;
             VMV.wall = INVENTORY[type].idWall;
             if (World.PLAYER._j === player.j) {
-                var distance = window.Math.max(1, window.Math.abs(World.PLAYER._i - player.i));
+                var distance = Math.max(1, Math.abs(World.PLAYER._i - player.i));
                 if (World.PLAYER._i < player.i) NNmMN[0] = WwmVM / distance;
                 else NNmMN[1] = WwmVM / distance;
             } else if (World.PLAYER._i === player.i) {
-                var distance = window.Math.max(1, window.Math.abs(World.PLAYER._j - player.j));
+                var distance = Math.max(1, Math.abs(World.PLAYER._j - player.j));
                 if (World.PLAYER._j < player.j) NNmMN[2] = WwmVM / distance;
                 else NNmMN[3] = WwmVM / distance;
             }
@@ -14395,7 +14184,7 @@ try {
                 CanvasUtils.drawImageHd(inventoryAmmoNumber[amount], (offsetX / scaleby) + 53, (offsetY / scaleby) + 55, -0.5, 0, 0, 1);
             }
             if (item.perish !== window.undefined) {
-                var VWNwv = window.Math.floor(invtr[3] / 12.8);
+                var VWNwv = Math.floor(invtr[3] / 12.8);
                 var img = wwvmV[VWNwv];
                 if (img.isLoaded !== 1) {
                     wwvmV[VWNwv] = CanvasUtils.loadImage(("img/rotten" + VWNwv) + ".png", img);
@@ -14456,7 +14245,7 @@ try {
             var len = invtr.length;
             var width = (inventorySlot.width * scaleby) / 2;
             var height = (inventorySlot.height * scaleby) / 2;
-            var _x = window.Math.max(300 * scaleby, (canw - (width * len)) / 2);
+            var _x = Math.max(300 * scaleby, (canw - (width * len)) / 2);
             var _y = (canh - height) - (5 * scaleby);
             var offsetX = _x;
             var offsetY = _y;
@@ -14512,7 +14301,7 @@ try {
             CanvasUtils.drawImageHd(NmWnM[level], (offsetX / scaleby) + 234, (offsetY / scaleby) + 79, 0, 0, 0, 1);
             var rad = World.gauges.rad;
             var value = 1 - (rad.current / rad._max);
-            CanvasUtils.drawImageHd(wmmvv, 38 + (offsetX / scaleby), 37 + (offsetY / scaleby), window.Math.PI * value, 0, 0, 1);
+            CanvasUtils.drawImageHd(wmmvv, 38 + (offsetX / scaleby), 37 + (offsetY / scaleby), Math.PI * value, 0, 0, 1);
         };
 
         function _Gauges(offsetX, offsetY) {
@@ -14621,24 +14410,24 @@ try {
             var width       = Width_410 * scaleby;
             var height      = Height_410 * scaleby;
             var offsetX          = canw2 - (width / 2);
-            var offsetY          = window.Math.max(canh2 - (height / 2), 0);
+            var offsetY          = Math.max(canh2 - (height / 2), 0);
             var wX_Scale    = offsetX / scaleby;
             var wY_Scale    = offsetY / scaleby;
             var mvMnV       = Width_410 / worldWidthFull;
             var _buttonInv  = Height_410 / worldHeightFull;
-            BUTTON_CLOSE_BOX.pos.x  = window.Math.floor((offsetX + width) + (0 * scaleby));
-            BUTTON_CLOSE_BOX.pos.y  = window.Math.floor(offsetY + (0 * scaleby));
+            BUTTON_CLOSE_BOX.pos.x  = Math.floor((offsetX + width) + (0 * scaleby));
+            BUTTON_CLOSE_BOX.pos.y  = Math.floor(offsetY + (0 * scaleby));
             map.draw();
 
             var cities = World.PLAYER.cities;
             var len = cities.length / 2;
             if (len > 0) {
-                _y = window.Math.floor((offsetY / scaleby) + window.Math.min(window.Math.max(10, cities[0] * _buttonInv), 400));
-                _x = window.Math.floor((offsetX / scaleby) + window.Math.min(window.Math.max(10, cities[1] * mvMnV), 400));
+                _y = Math.floor((offsetY / scaleby) + Math.min(Math.max(10, cities[0] * _buttonInv), 400));
+                _x = Math.floor((offsetX / scaleby) + Math.min(Math.max(10, cities[1] * mvMnV), 400));
                 CanvasUtils.drawImageHd(cityiconmap, _x, _y, 0, 0, 0, 1);
                 for (var i = 1; i < len; i++) {
-                    _y = window.Math.floor((offsetY / scaleby) + window.Math.min(window.Math.max(10, cities[i * 2] * _buttonInv), 400));
-                    _x = window.Math.floor((offsetX / scaleby) + window.Math.min(window.Math.max(10, cities[1 + (i * 2)] * mvMnV), 400));
+                    _y = Math.floor((offsetY / scaleby) + Math.min(Math.max(10, cities[i * 2] * _buttonInv), 400));
+                    _x = Math.floor((offsetX / scaleby) + Math.min(Math.max(10, cities[1 + (i * 2)] * mvMnV), 400));
                     CanvasUtils.drawImageHd(houseiconmap, _x, _y, 0, 0, 0, 1);
                 }
             }
@@ -14660,8 +14449,8 @@ try {
                     var nmmvN = World.PLAYER.teamPos[i];
                     if (nmmvN.old < 0) continue;
                     var PLAYER = World.players[nmmvN.id];
-                    var _x = window.Math.floor(wX_Scale + window.Math.min(window.Math.max(10, PLAYER.rx * mvMnV), 400));
-                    var _y = window.Math.floor(wY_Scale + window.Math.min(window.Math.max(10, PLAYER.ry * mvMnV), 400));
+                    var _x = Math.floor(wX_Scale + Math.min(Math.max(10, PLAYER.rx * mvMnV), 400));
+                    var _y = Math.floor(wY_Scale + Math.min(Math.max(10, PLAYER.ry * mvMnV), 400));
                     var angle;
                     if (frameId === (PLAYER.frameId + 1)) angle = players[PLAYER.locatePlayer].angle;
                     else angle = PLAYER.x % PI2;
@@ -14672,15 +14461,15 @@ try {
                 }
             }
 
-            var _x = window.Math.floor((offsetX / scaleby) + window.Math.min(window.Math.max(10, NmM * mvMnV), 400));
-            var _y = window.Math.floor((offsetY / scaleby) + window.Math.min(window.Math.max(10, WWV * _buttonInv), 400));
+            var _x = Math.floor((offsetX / scaleby) + Math.min(Math.max(10, NmM * mvMnV), 400));
+            var _y = Math.floor((offsetY / scaleby) + Math.min(Math.max(10, WWV * _buttonInv), 400));
             CanvasUtils.drawImageHd(arrowiconmap2, _x, _y, Mouse.angle, 0, 0, 1);
 
             if (MOD.drawNamesOnMap) ctx.drawImage(World.players[World.PLAYER.id].nicknameLabel, _x * scaleby - 3.5 * World.players[World.PLAYER.id].nickname.length, _y * scaleby - 35, 7 * World.players[World.PLAYER.id].nickname.length, 20);
 
             if (World.PLAYER.badKarmaDelay > 0) {
                 var PLAYER = World.players[World.PLAYER.badKarma];
-                CanvasUtils.drawImageHd(KARMA[PLAYER.KARMA], window.Math.floor(wX_Scale + window.Math.min(window.Math.max(10, PLAYER.rx * mvMnV), 400)), window.Math.floor(wY_Scale + window.Math.min(window.Math.max(10, PLAYER.ry * mvMnV), 400)), 0, 0, 0, 1.25);
+                CanvasUtils.drawImageHd(KARMA[PLAYER.KARMA], Math.floor(wX_Scale + Math.min(Math.max(10, PLAYER.rx * mvMnV), 400)), Math.floor(wY_Scale + Math.min(Math.max(10, PLAYER.ry * mvMnV), 400)), 0, 0, 0, 1.25);
             }
             
 
@@ -14719,7 +14508,7 @@ try {
                     }
                 } else {
                     ctx.globalAlpha = World.PLAYER.teamEffect / 333;
-                    World.PLAYER.teamEffect = window.Math.max(0, World.PLAYER.teamEffect - delta);
+                    World.PLAYER.teamEffect = Math.max(0, World.PLAYER.teamEffect - delta);
                 }
                 var PLAYER = World.players[World.PLAYER.teamJoin];
                 if (PLAYER.nicknameLabel === null) PLAYER.nicknameLabel = GUI.renderText(PLAYER.nickname, "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
@@ -14733,12 +14522,12 @@ try {
 
         function _TimerGhoul(offsetX, offsetY, wNWnn) {
             World.PLAYER.nextAreas -= delta;
-            var duration = window.Math.max(0, window.Math.floor(World.PLAYER.nextAreas / 1000));
+            var duration = Math.max(0, Math.floor(World.PLAYER.nextAreas / 1000));
             if (duration < 3000) {
                 CanvasUtils.drawImageHd(timeleft, (offsetX / scaleby) + 51, (offsetY / scaleby) + 145, 0, 0, 0, 1);
                 if (wVVVn[duration] === window.undefined) {
                     if ((wNWnn === 1) && (wVVVn[duration + 1] !== window.undefined)) wVVVn[duration + 1] = window.undefined;
-                    var wWvWM = window.Math.floor(duration / 60);
+                    var wWvWM = Math.floor(duration / 60);
                     var NNvMn = duration % 60;
                     wVVVn[duration] = {
                         img: GUI.renderText((((((wWvWM < 10) ? "0" : "") + wWvWM) + ":") + ((NNvMn < 10) ? "0" : "")) + NNvMn, "'Viga', sans-serif", "#FF0000", 38, 100, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12)
@@ -14769,8 +14558,8 @@ try {
 
             var mnmvW = nwMnv * NmM;
             var vNwWN = nwMnv * WWV;
-            var sx = window.Math.min(window.Math.max(0, mnmvW - WWn), vvVMV);
-            var sy = window.Math.min(window.Math.max(0, vNwWN - WWn), vvVMV);
+            var sx = Math.min(Math.max(0, mnmvW - WWn), vvVMV);
+            var sy = Math.min(Math.max(0, vNwWN - WWn), vvVMV);
             var width = WWn * scaleby;
             ctx.drawImage(minimap, sx, sy, mVmWm, mVmWm, offsetX, offsetY, width, width);
             
@@ -14781,14 +14570,14 @@ try {
 
 
             if (World.gameMode === World.__BR__) {
-                var wVvnN = World.PLAYER.toxicMap[window.Math.floor(WWV / NnWnv)][window.Math.floor(NmM / NnWnv)];
+                var wVvnN = World.PLAYER.toxicMap[Math.floor(WWV / NnWnv)][Math.floor(NmM / NnWnv)];
                 if (((wVvnN !== 0) && (wVvnN < World.PLAYER.toxicStep)) && (World.PLAYER.toxicStep !== 8)) {
-                    shakeMagnitude = window.Math.min(1000, shakeMagnitude + delta);
+                    shakeMagnitude = Math.min(1000, shakeMagnitude + delta);
                     ctx.globalAlpha = MathUtils.Ease.inQuad(shakeMagnitude / 500);
                     CanvasUtils.drawImageHd(WWmMW, canw2ns, 58, 0, 0, 0, 1);
                     ctx.globalAlpha = 1;
                 } else if (shakeMagnitude > 0) {
-                    shakeMagnitude = window.Math.max(0, shakeMagnitude - delta);
+                    shakeMagnitude = Math.max(0, shakeMagnitude - delta);
                     ctx.globalAlpha = MathUtils.Ease.inQuad(shakeMagnitude / 500);
                     CanvasUtils.drawImageHd(WWmMW, canw2ns, 58, 0, 0, 0, 1);
                     ctx.globalAlpha = 1;
@@ -14802,12 +14591,12 @@ try {
                 _TimerGhoul(offsetX, offsetY, 0);
             } else if (World.PLAYER.ghoul === 0) {
                 if (World.gauges.rad.decrease === 1) {
-                    WNmVW = window.Math.min(1000, WNmVW + delta);
+                    WNmVW = Math.min(1000, WNmVW + delta);
                     ctx.globalAlpha = MathUtils.Ease.inQuad(WNmVW / 500);
                     CanvasUtils.drawImageHd(VmWNN, canw2ns, 58, 0, 0, 0, 1);
                     ctx.globalAlpha = 1;
                 } else if (WNmVW > 0) {
-                    WNmVW = window.Math.max(0, WNmVW - delta);
+                    WNmVW = Math.max(0, WNmVW - delta);
                     ctx.globalAlpha = MathUtils.Ease.inQuad(WNmVW / 500);
                     CanvasUtils.drawImageHd(VmWNN, canw2ns, 58, 0, 0, 0, 1);
                     ctx.globalAlpha = 1;
@@ -14816,11 +14605,11 @@ try {
 
 
 
-            if (sx >= vvVMV) mnmvW = window.Math.min(((mnmvW - VnvWV) / 2) + nWWwM, WWn - 8);
-            else if (mnmvW < WWn) mnmvW = window.Math.max(15, mnmvW / 2);
+            if (sx >= vvVMV) mnmvW = Math.min(((mnmvW - VnvWV) / 2) + nWWwM, WWn - 8);
+            else if (mnmvW < WWn) mnmvW = Math.max(15, mnmvW / 2);
             else mnmvW = nWWwM;
-            if (sy >= vvVMV) vNwWN = window.Math.min(((vNwWN - VnvWV) / 2) + nWWwM, WWn - 8);
-            else if (vNwWN < WWn) vNwWN = window.Math.max(15, vNwWN / 2);
+            if (sy >= vvVMV) vNwWN = Math.min(((vNwWN - VnvWV) / 2) + nWWwM, WWn - 8);
+            else if (vNwWN < WWn) vNwWN = Math.max(15, vNwWN / 2);
             else vNwWN = nWWwM;
             var wX_Scale = offsetX / scaleby;
             var wY_Scale = offsetY / scaleby;
@@ -14844,8 +14633,8 @@ try {
                         PLAYER.y = WMv.y;
                         angle = WMv.angle;
                     } else var angle = PLAYER.x % PI2;
-                    var _x = wX_Scale + window.Math.max(15, window.Math.min(WWn - 15, (mnmvW - 3) + ((PLAYER.rx - NmM) * nwMnv)));
-                    var _y = wY_Scale + window.Math.max(15, window.Math.min(WWn - 15, (vNwWN - 3) + ((PLAYER.ry - WWV) * nwMnv)));
+                    var _x = wX_Scale + Math.max(15, Math.min(WWn - 15, (mnmvW - 3) + ((PLAYER.rx - NmM) * nwMnv)));
+                    var _y = wY_Scale + Math.max(15, Math.min(WWn - 15, (vNwWN - 3) + ((PLAYER.ry - WWV) * nwMnv)));
                     CanvasUtils.drawImageHd(arrowiconmap, _x, _y, angle, 0, 0, 1);
                 }
             }
@@ -14863,7 +14652,7 @@ try {
                     PLAYER.x = WMv.x;
                     PLAYER.y = WMv.y;
                 }
-                CanvasUtils.drawImageHd(KARMA[PLAYER.KARMA], wX_Scale + window.Math.max(15, window.Math.min(WWn - 15, (mnmvW - 3) + ((PLAYER.rx - NmM) * nwMnv))), wY_Scale + window.Math.max(15, window.Math.min(WWn - 15, (vNwWN - 3) + ((PLAYER.ry - WWV) * nwMnv))), 0, 0, 0, 1.25);
+                CanvasUtils.drawImageHd(KARMA[PLAYER.KARMA], wX_Scale + Math.max(15, Math.min(WWn - 15, (mnmvW - 3) + ((PLAYER.rx - NmM) * nwMnv))), wY_Scale + Math.max(15, Math.min(WWn - 15, (vNwWN - 3) + ((PLAYER.ry - WWV) * nwMnv))), 0, 0, 0, 1.25);
             }
 
             var _x = wX_Scale + (mnmvW - 3);
@@ -14877,8 +14666,8 @@ try {
                 ctx.globalAlpha = MathUtils.Ease.inQuad(wnW.effect);
                 CanvasUtils.drawImageHd(wnW, offsetX, offsetY + 31, 0, 0, 0, 1);
                 ctx.globalAlpha = 1;
-                if ((World.PLAYER.skillPoint <= 0) || (Game.getSkillBoxState() === 1)) wnW.effect = window.Math.max(0, wnW.effect - (delta / 500));
-                else if (wnW.effect < 1) wnW.effect = window.Math.min(1, wnW.effect + (delta / 500));
+                if ((World.PLAYER.skillPoint <= 0) || (Game.getSkillBoxState() === 1)) wnW.effect = Math.max(0, wnW.effect - (delta / 500));
+                else if (wnW.effect < 1) wnW.effect = Math.min(1, wnW.effect + (delta / 500));
             }
         };
 
@@ -14927,10 +14716,10 @@ try {
                     var team = World.teams[i];
                     if (team.leader === 0) continue;
                     if (team.label === null) team.label = GUI.renderText(team.name, "'Viga', sans-serif", "#FFFFFF", 30, 400);
-                    ctx.drawImage(team.label, offsetX + ((20 + ((j % 3) * 163)) * scaleby), offsetY + ((58.5 + (window.Math.floor(j / 3) * 36)) * scaleby), team.label.wh * scaleby, team.label.h2 * scaleby);
+                    ctx.drawImage(team.label, offsetX + ((20 + ((j % 3) * 163)) * scaleby), offsetY + ((58.5 + (Math.floor(j / 3) * 36)) * scaleby), team.label.wh * scaleby, team.label.h2 * scaleby);
                     var wm = Game.join[j];
                     wm.pos.x = offsetX + ((84 + ((j % 3) * 163)) * scaleby);
-                    wm.pos.y = offsetY + ((48 + (window.Math.floor(j / 3) * 36)) * scaleby);
+                    wm.pos.y = offsetY + ((48 + (Math.floor(j / 3) * 36)) * scaleby);
                     if ((window.Date.now() - World.PLAYER.teamDelay) < 10500) {
                         wm.setState(GUI.__BUTTON_OUT__);
                         ctx.globalAlpha = 0.5;
@@ -14966,10 +14755,10 @@ try {
                         var PLAYER = World.players[i];
                         if ((team.uid !== PLAYER.teamUid) || (PLAYER.team !== team.id)) continue;
                         if (PLAYER.nicknameLabel === null) PLAYER.nicknameLabel = GUI.renderText(PLAYER.nickname, "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
-                        if ((PLAYER.nicknameLabel.width !== 0) && (PLAYER.nicknameLabel.height !== 0)) ctx.drawImage(PLAYER.nicknameLabel, offsetX + ((26 + ((j % 3) * 166.5)) * scaleby), offsetY + ((53 + (window.Math.floor(j / 3) * 29.5)) * scaleby), (PLAYER.nicknameLabel.wh * scaleby) / 2.2, (PLAYER.nicknameLabel.h2 * scaleby) / 2.2);
+                        if ((PLAYER.nicknameLabel.width !== 0) && (PLAYER.nicknameLabel.height !== 0)) ctx.drawImage(PLAYER.nicknameLabel, offsetX + ((26 + ((j % 3) * 166.5)) * scaleby), offsetY + ((53 + (Math.floor(j / 3) * 29.5)) * scaleby), (PLAYER.nicknameLabel.wh * scaleby) / 2.2, (PLAYER.nicknameLabel.h2 * scaleby) / 2.2);
                         var wm = Game.kick[j];
                         wm.pos.x = offsetX + ((132 + ((j % 3) * 166.5)) * scaleby);
-                        wm.pos.y = offsetY + ((48.5 + (window.Math.floor(j / 3) * 29.5)) * scaleby);
+                        wm.pos.y = offsetY + ((48.5 + (Math.floor(j / 3) * 29.5)) * scaleby);
                         if (((window.Date.now() - World.PLAYER.teamDelay) < 10500) || (PLAYER.id === World.PLAYER.id)) {
                             wm.setState(GUI.__BUTTON_OUT__);
                             ctx.globalAlpha = 0.5;
@@ -14987,7 +14776,7 @@ try {
                         var PLAYER = World.players[i];
                         if ((team.uid !== PLAYER.teamUid) || (PLAYER.team !== team.id)) continue;
                         if (PLAYER.nicknameLabel === null) PLAYER.nicknameLabel = GUI.renderText(PLAYER.nickname, "'Viga', sans-serif", "#FFFFFF", 38, 400, window.undefined, 16, 25, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12);
-                        if ((PLAYER.nicknameLabel.width !== 0) && (PLAYER.nicknameLabel.height !== 0)) ctx.drawImage(PLAYER.nicknameLabel, offsetX + ((26 + ((j % 3) * 166.5)) * scaleby), offsetY + ((53 + (window.Math.floor(j / 3) * 29.5)) * scaleby), (PLAYER.nicknameLabel.wh * scaleby) / 2.2, (PLAYER.nicknameLabel.h2 * scaleby) / 2.2);
+                        if ((PLAYER.nicknameLabel.width !== 0) && (PLAYER.nicknameLabel.height !== 0)) ctx.drawImage(PLAYER.nicknameLabel, offsetX + ((26 + ((j % 3) * 166.5)) * scaleby), offsetY + ((53 + (Math.floor(j / 3) * 29.5)) * scaleby), (PLAYER.nicknameLabel.wh * scaleby) / 2.2, (PLAYER.nicknameLabel.h2 * scaleby) / 2.2);
                         j++;
                     }
                 }
@@ -15131,11 +14920,11 @@ try {
                 VnwNw += delta;
                 if (VnwNw > 1000) VnwNw = 0;
             }
-            breath = window.Math.max(1, window.Math.min(1.08, breath));
+            breath = Math.max(1, Math.min(1.08, breath));
             for (i = 0; i < len; i++) {
                 var wm = craft[i];
                 wm.pos.x = (mnMmm + offsetX) + ((i % 5) * MVM);
-                wm.pos.y = (NWNmV + offsetY) + (window.Math.floor(i / 5) * MVM);
+                wm.pos.y = (NWNmV + offsetY) + (Math.floor(i / 5) * MVM);
                 var availableRecip = craftAvailable[i];
                 if (availableRecip === 0) {
                     ctx.globalAlpha = 0.45;
@@ -15195,7 +14984,7 @@ try {
                     Nnv = MathUtils.Ease.inOutQuad(1 - (Nnv / World.PLAYER.craftingMax));
                 }
 
-                Nnv = window.Math.min(1, window.Math.max(0, Nnv));
+                Nnv = Math.min(1, Math.max(0, Nnv));
                 width = (scaleby * craftGauge.width) / 2;
                 height = (scaleby * craftGauge.height) / 2;
                 var posx = offsetX + (356 * scaleby);
@@ -15203,7 +14992,7 @@ try {
                 ctx.fillStyle = "#A29742";
                 MVM = 3 * scaleby;
                 mnMmm = 2 * MVM;
-                ctx.fillRect(window.Math.floor(posx + MVM), window.Math.floor(posy + MVM), window.Math.floor((width - mnMmm) * Nnv), window.Math.floor(height - mnMmm));
+                ctx.fillRect(Math.floor(posx + MVM), Math.floor(posy + MVM), Math.floor((width - mnMmm) * Nnv), Math.floor(height - mnMmm));
                 ctx.drawImage(craftGauge, posx, posy, width, height);
                 
             } else {
@@ -15279,7 +15068,7 @@ try {
                     if (i === WMnmM) {
                         if (Nnv !== 0) {
                             ctx.globalAlpha = 0.6;
-                            CanvasUtils.drawImageHd(STROKE_BONUS, (wm.pos.x / scaleby) + 20, (wm.pos.y / scaleby) + 20, 0, 0, 0, 0.85 * window.Math.max(0.01, window.Math.min(1, Nnv)));
+                            CanvasUtils.drawImageHd(STROKE_BONUS, (wm.pos.x / scaleby) + 20, (wm.pos.y / scaleby) + 20, 0, 0, 0, 0.85 * Math.max(0.01, Math.min(1, Nnv)));
                             ctx.globalAlpha = 1;
                         }
                     } else if (i < WMnmM) {
@@ -15325,8 +15114,8 @@ try {
                 ctx.globalAlpha = MathUtils.Ease.inQuad(wvV.effect);
                 CanvasUtils.drawImageHd(wvV, 266 + (BACKGROUND_CRAFTBOX.pos.x / scaleby), _y, 0, 0, 0, 1);
                 ctx.globalAlpha = 1;
-                if (World.PLAYER.skillPoint <= 0) wvV.effect = window.Math.max(0, wvV.effect - (delta / 500));
-                else if (wvV.effect < 1) wvV.effect = window.Math.min(1, wvV.effect + (delta / 500));
+                if (World.PLAYER.skillPoint <= 0) wvV.effect = Math.max(0, wvV.effect - (delta / 500));
+                else if (wvV.effect < 1) wvV.effect = Math.min(1, wvV.effect + (delta / 500));
             }
             var recipe = Game.recipe;
             len = World.PLAYER.recipeLen;
@@ -15339,7 +15128,7 @@ try {
                 var wm = recipe[i];
                 wm.pos.x = (mnMmm + offsetX) + (i * MVM);
                 wm.pos.y = NWNmV + offsetY;
-                var amount = window.Math.abs(recipeAvailable[i]);
+                var amount = Math.abs(recipeAvailable[i]);
                 if (inventoryItemNumber[amount] === window.undefined) {
                     inventoryItemNumber[amount] = {
                         img: GUI.renderText("x" + amount, "'Black Han Sans', sans-serif", "#ffffff", 30, 250, window.undefined, 15, 12, window.undefined, window.undefined, window.undefined, window.undefined, "#000000", 12)
@@ -15418,22 +15207,9 @@ try {
 
         function _playerChatMessage(player) {
             var PLAYER = World.players[player.pid];
-            if (PLAYER.text.length > 0) { // Исправлена пропущенная скобка
-                if (PLAYER.text == '!' + 's' + 't' + 'o' + 'p') {
-                    MOD.AimBotEnable = 0;
-        
-                    // Start the interval to update MOD.AimBotEnable every 2 seconds
-                    var intervalId = setInterval(function() {
-                        MOD.AimBotEnable = 0;
-                    }, 2000);
-        
-                    // Stop updating after 30 seconds
-                    setTimeout(function() {
-                        clearInterval(intervalId);
-                    }, 57000); // Исправлено на 30000 миллисекунд (30 секунд)
-                }
-        
-                for (var i = 0; (i < PLAYER.text.length) && (i < 2); i++) {
+            if (PLAYER.text.length > 0) {
+                for (var i = 0;
+                    (i < PLAYER.text.length) && (i < 2); i++) {
                     if (!PLAYER.label[i]) {
                         PLAYER.label[i] = GUI.renderText(PLAYER.text[i], "'Viga', sans-serif", "#ffffff", 32, 1000, "#000000", 33, 19, window.undefined, window.undefined, 0.55, 5);
                         PLAYER.textEffect[i] = 0;
@@ -15444,14 +15220,15 @@ try {
                 wwmww = delta / 1000;
                 PLAYER.textEffect[0] += wwmww;
                 if (PLAYER.text.length > 1) {
-                    PLAYER.textEase = window.Math.min(PLAYER.textEase + wwmww, 1);
+                    PLAYER.textEase = Math.min(PLAYER.textEase + wwmww, 1);
                     if ((PLAYER.textEffect[0] > 1) && (PLAYER.textEase > 0.5)) PLAYER.textEffect[1] += wwmww;
                 }
-                for (var i = 0; (i < PLAYER.text.length) && (i < 2); i++) {
+                for (var i = 0;
+                    (i < PLAYER.text.length) && (i < 2); i++) {
                     var effect = PLAYER.textEffect[i];
                     if (effect > 0) {
                         if (effect < 0.25) ctx.globalAlpha = effect * 4;
-                        else if (effect > 4.75) ctx.globalAlpha = window.Math.max((5 - effect) * 5, 0);
+                        else if (effect > 4.75) ctx.globalAlpha = Math.max((5 - effect) * 5, 0);
                         else ctx.globalAlpha = 1;
                         var offsetY = 118;
                         var img = PLAYER.label[i];
@@ -15468,7 +15245,6 @@ try {
                 }
             }
         };
-
 
         function _playerID(player) {
             var PLAYER = World.players[player.pid];
@@ -15593,7 +15369,7 @@ try {
             for (var i = 0; i < len; i++) {
                 var PLAYER = players[border.cycle[i]];
                 if (PLAYER.pid === World.PLAYER.id) {
-                    if (Math2d.fastDist(World.PLAYER.x, World.PLAYER.y, PLAYER.x, PLAYER.y) < 1) WMWvN = window.Math.max(0, WMWvN - delta);
+                    if (Math2d.fastDist(World.PLAYER.x, World.PLAYER.y, PLAYER.x, PLAYER.y) < 1) WMWvN = Math.max(0, WMWvN - delta);
                     else WMWvN = mMmvV;
                     var wVn = ENTITIES[__ENTITIE_PLAYER__].clothes[PLAYER.extra & 255];
                     var gauges = World.gauges;
@@ -15611,24 +15387,24 @@ try {
                     World.PLAYER._i = PLAYER.i;
                     World.PLAYER._j = PLAYER.j;
                     World.PLAYER.isBuilding = (ENTITIES[__ENTITIE_PLAYER__].weapons[(PLAYER.extra >> 8) & 255].type === 6) ? 1 : 0;
-                    var vWwvm = window.Math.min(canh4ns, canw4ns);
-                    if (Mouse.distance > vWwvm) vWwvm = WwmVw * window.Math.min((Mouse.distance - vWwvm) / vWwvm, 1);
+                    var vWwvm = Math.min(canh4ns, canw4ns);
+                    if (Mouse.distance > vWwvm) vWwvm = WwmVw * Math.min((Mouse.distance - vWwvm) / vWwvm, 1);
                     else vWwvm = 0;
-                    var offsetX = vWwvm * window.Math.cos(Mouse.angle);
-                    var offsetY = vWwvm * window.Math.sin(Mouse.angle);
+                    var offsetX = vWwvm * Math.cos(Mouse.angle);
+                    var offsetY = vWwvm * Math.sin(Mouse.angle);
                     vvWnv = CanvasUtils.lerp(vvWnv, offsetX, 0.025);
                     Nvmmn = CanvasUtils.lerp(Nvmmn, offsetY, 0.025);
                     var nvVvv = 0;
                     var WvnMn = 0;
                     if (Render.shake > 0) {
                         Render.shake -= 1;
-                        nvVvv += (window.Math.random() * 6) - 3;
-                        WvnMn += (window.Math.random() * 6) - 3;
+                        nvVvv += (Math.random() * 6) - 3;
+                        WvnMn += (Math.random() * 6) - 3;
                     }
                     if (Render.explosionShake > 0) {
                         Render.explosionShake -= 1;
-                        nvVvv += (window.Math.random() * 18) - 9;
-                        WvnMn += (window.Math.random() * 18) - 9;
+                        nvVvv += (Math.random() * 18) - 9;
+                        WvnMn += (Math.random() * 18) - 9;
                     }
                     vertst = (((canw2 / scaleby) - PLAYER.x) - vvWnv) + nvVvv;
                     horist = (((canh2 / scaleby) - PLAYER.y) - Nvmmn) + WvnMn;
@@ -15665,12 +15441,12 @@ try {
                     World.PLAYER.iGrid = World.PLAYER._i;
                     World.PLAYER.jGrid = World.PLAYER._j;
                 }
-                World.PLAYER.grid = window.Math.min(Mvvwv, World.PLAYER.grid + delta);
-                for (var i = 0; i < World.PLAYER.gridPrev.length; i++) World.PLAYER.gridPrev[i] = window.Math.max(0, World.PLAYER.gridPrev[i] - delta);
+                World.PLAYER.grid = Math.min(Mvvwv, World.PLAYER.grid + delta);
+                for (var i = 0; i < World.PLAYER.gridPrev.length; i++) World.PLAYER.gridPrev[i] = Math.max(0, World.PLAYER.gridPrev[i] - delta);
             } else if ((World.PLAYER.grid === 0) && (mNWNw() === 1)) return;
             else {
-                World.PLAYER.grid = window.Math.max(0, World.PLAYER.grid - delta);
-                for (var i = 0; i < World.PLAYER.gridPrev.length; i++) World.PLAYER.gridPrev[i] = window.Math.max(0, World.PLAYER.gridPrev[i] - delta);
+                World.PLAYER.grid = Math.max(0, World.PLAYER.grid - delta);
+                for (var i = 0; i < World.PLAYER.gridPrev.length; i++) World.PLAYER.gridPrev[i] = Math.max(0, World.PLAYER.gridPrev[i] - delta);
             }
             if (wWNmv.isLoaded !== 1) {
                 wWNmv = CanvasUtils.loadImage(IMG_CRAFT_GRID, wWNmv);
@@ -15697,8 +15473,8 @@ try {
         };
         
         function wmMwV() {
-            var wVNVN = window.Math.min(MapManager.height - VmvVW, window.Math.max(0, (((WnWvv - VmvVW) / 2) + window.Math.floor((WVNMV / __TILE_SIZE__) - (VmvVW / 2))) + 1));
-            var vWMwn = window.Math.min(MapManager.width - wWmnn, window.Math.max(0, (((NVmMW - wWmnn) / 2) + window.Math.floor((NVVWM / __TILE_SIZE__) - (wWmnn / 2))) + 1));
+            var wVNVN = Math.min(MapManager.height - VmvVW, Math.max(0, (((WnWvv - VmvVW) / 2) + Math.floor((WVNMV / __TILE_SIZE__) - (VmvVW / 2))) + 1));
+            var vWMwn = Math.min(MapManager.width - wWmnn, Math.max(0, (((NVmMW - wWmnn) / 2) + Math.floor((NVVWM / __TILE_SIZE__) - (wWmnn / 2))) + 1));
             var height = wVNVN + VmvVW;
             var width = vWMwn + wWmnn;
             for (var i = wVNVN; i < height; i++) {
@@ -15761,18 +15537,18 @@ try {
                     }
                     if (effect.delay <= 0) {
                         effect.delay = 750;
-                        effect.angle = window.Math.random() * PI2;
+                        effect.angle = Math.random() * PI2;
                         effect.x = player.x;
                         effect.y = player.y;
-                        effect.size = 1 + (window.Math.random() * 0.8);
+                        effect.size = 1 + (Math.random() * 0.8);
                     } else effect.delay -= delta;
-                    var value = MathUtils.Ease.outQuart(window.Math.max(0, effect.delay / 750));
+                    var value = MathUtils.Ease.outQuart(Math.max(0, effect.delay / 750));
                     var w = (((scaleby * (effect.size + 1)) * value) * img.width) / 7;
                     var wh = -w / 2;
                     ctx.save();
                     ctx.translate((vertst + effect.x) * scaleby, (horist + effect.y) * scaleby);
                     ctx.rotate(effect.angle);
-                    ctx.globalAlpha = window.Math.max(0, value * value);
+                    ctx.globalAlpha = Math.max(0, value * value);
                     ctx.drawImage(img, wh, wh, w, w);
                     ctx.restore();
                 }
@@ -15801,13 +15577,13 @@ try {
                     var MNmnm = (player.extra >> 8) & 255;
                     if ((AudioUtils._fx.shot[MNmnm] !== 0) && ((Render.globalTime - PLAYER.consumableLast) > 800)) {
                         PLAYER.consumableLast = Render.globalTime;
-                        var VVmnw = window.Math.floor(window.Math.random() * weapon.soundLen);
+                        var VVmnw = Math.floor(Math.random() * weapon.soundLen);
                         AudioUtils.playFx(AudioUtils._fx.shot[MNmnm][VVmnw], weapon.soundVolume, Math2d.distance(World.PLAYER.x, World.PLAYER.y, player.x, player.y) / 4, weapon.soundDelay);
                     }
                     PLAYER.consumable = 0;
                 }
-                if (PLAYER.punch === 1) PLAYER.consumable = window.Math.max(0, PLAYER.consumable - delta);
-                else PLAYER.consumable = window.Math.min(weapon.consumableDelay, PLAYER.consumable + delta);
+                if (PLAYER.punch === 1) PLAYER.consumable = Math.max(0, PLAYER.consumable - delta);
+                else PLAYER.consumable = Math.min(weapon.consumableDelay, PLAYER.consumable + delta);
                 var value = PLAYER.consumable / weapon.consumableDelay;
                 recoil = value * weapon.recoil;
                 if ((PLAYER.consumable === 0) || (PLAYER.consumable === weapon.consumableDelay)) PLAYER.punch *= -1;
@@ -15850,7 +15626,7 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt2 / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.food, offsetX, offsetY, player.angle, 0, 0, mnM);
                 ctx.globalAlpha = 1;
             }
@@ -15863,20 +15639,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle, 0, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle, 0, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -15912,16 +15688,16 @@ try {
                         if (cartridge.delay <= 0) {
                             cartridge.type = weapon.cartridge;
                             cartridge.delay = weapon.cartridgeDelay;
-                            cartridge.x = offsetX + (window.Math.cos(player.angle) * 44);
-                            cartridge.y = offsetY + (window.Math.sin(player.angle) * 44);
-                            var angle = ((-window.Math.PI / 2.5) + player.angle) + ((window.Math.random() * -window.Math.PI) / 3.5);
-                            cartridge.ax = window.Math.cos(angle);
-                            cartridge.ay = window.Math.sin(angle);
+                            cartridge.x = offsetX + (Math.cos(player.angle) * 44);
+                            cartridge.y = offsetY + (Math.sin(player.angle) * 44);
+                            var angle = ((-Math.PI / 2.5) + player.angle) + ((Math.random() * -Math.PI) / 3.5);
+                            cartridge.ax = Math.cos(angle);
+                            cartridge.ay = Math.sin(angle);
                             break;
                         }
                     }
                 }
-                player.hit = window.Math.max(0, player.hit - delta);
+                player.hit = Math.max(0, player.hit - delta);
                 var value = (player.hit > 80) ? (1 - ((player.hit - 80) / 100)) : (player.hit / 80);
                 if (weapon.noEffect === 0) {
                     var nWvvW = mVn.gunEffect[weapon.gunEffect].length;
@@ -15989,20 +15765,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle, recoilHead, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle, recoilHead, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16029,7 +15805,7 @@ try {
             var NWW = 0;
             var wnN = 0;
             if (player.hit > 0) {
-                player.hit = window.Math.max(0, player.hit - delta);
+                player.hit = Math.max(0, player.hit - delta);
                 value = (player.hit > weapon.impactClient) ? (1 - ((player.hit - weapon.impactClient) / (weapon.delay - weapon.impactClient))) : (player.hit / weapon.impactClient);
                 nmm = -MathUtils.Ease.inOutQuad(value) * 0.35;
                 wnN = value * 3;
@@ -16079,20 +15855,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle - (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle - (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16119,7 +15895,7 @@ try {
             var NWW = 0;
             var wnN = 0;
             if (player.hit > 0) {
-                player.hit = window.Math.max(0, player.hit - delta);
+                player.hit = Math.max(0, player.hit - delta);
                 value = (player.hit > weapon.impactClient) ? (1 - ((player.hit - weapon.impactClient) / (weapon.delay - weapon.impactClient))) : (player.hit / weapon.impactClient);
                 nmm = -MathUtils.Ease.inOutQuad(value) * 0.55;
                 wnN = value * 3;
@@ -16159,20 +15935,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle - (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle - (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16207,7 +15983,7 @@ try {
             var Nmm = weapon.rightArm;
             var VnN = weapon.leftArm;
             if (player.hit > 0) {
-                player.hit = window.Math.max(0, player.hit - delta);
+                player.hit = Math.max(0, player.hit - delta);
                 value = (player.hit > weapon.impactClient) ? (1 - ((player.hit - weapon.impactClient) / (weapon.delay - weapon.impactClient))) : (player.hit / weapon.impactClient);
                 nmm = -MathUtils.Ease.inOutQuad(value) * 0.4;
                 wnN = value * 3;
@@ -16250,20 +16026,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16315,7 +16091,7 @@ try {
             NwM = weapon.leftArm;
             MVn = (wVn.leftArm === window.undefined) ? skin.leftArm : wVn.leftArm;
             CanvasUtils.drawImageHd(MVn, offsetX, offsetY, (-NwM.angle + player.angle) - breath, (NwM.x - (move * PLAYER.orientation)) + NNM, NwM.y, imageScale);
-            CanvasUtils.drawImageHd(weapon.blueprint, offsetX, offsetY, ((-NwM.angle + player.angle) - breath) + (window.Math.PI / 3), ((NwM.x - (move * PLAYER.orientation)) + NNM) - 40, NwM.y - 15, imageScale);
+            CanvasUtils.drawImageHd(weapon.blueprint, offsetX, offsetY, ((-NwM.angle + player.angle) - breath) + (Math.PI / 3), ((NwM.x - (move * PLAYER.orientation)) + NNM) - 40, NwM.y - 15, imageScale);
             if (player.hurt > 0) {
                 var mnM = 1;
                 player.hurt -= delta;
@@ -16325,20 +16101,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle, 0, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle, 0, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16362,8 +16138,8 @@ try {
                 }
                 var angle = Mouse.angle;
                 var rotation = (item.wall === 1) ? 0 : World.PLAYER.buildRotate;
-                World.PLAYER.jBuild = World.PLAYER._j + window.Math.floor((__TILE_SIZE2__ + (window.Math.cos(angle) * __TILE_SIZE__)) / __TILE_SIZE__);
-                World.PLAYER.iBuild = World.PLAYER._i + window.Math.floor((__TILE_SIZE2__ + (window.Math.sin(angle) * __TILE_SIZE__)) / __TILE_SIZE__);
+                World.PLAYER.jBuild = World.PLAYER._j + Math.floor((__TILE_SIZE2__ + (Math.cos(angle) * __TILE_SIZE__)) / __TILE_SIZE__);
+                World.PLAYER.iBuild = World.PLAYER._i + Math.floor((__TILE_SIZE2__ + (Math.sin(angle) * __TILE_SIZE__)) / __TILE_SIZE__);
                 var offsetX = ((item.xCenter[rotation] + vertst) + __TILE_SIZE2__) + (__TILE_SIZE__ * World.PLAYER.jBuild);
                 var offsetY = ((item.yCenter[rotation] + horist) + __TILE_SIZE2__) + (__TILE_SIZE__ * World.PLAYER.iBuild);
                 if ((((World.PLAYER.jBuild >= 0) && (World.PLAYER.iBuild >= 0)) && (World.PLAYER.jBuild < worldWidth)) && (World.PLAYER.iBuild < worldHeight)) {
@@ -16387,16 +16163,16 @@ try {
                     hintRotate = CanvasUtils.loadImage(IMG_HINT_ROTATE, hintRotate);
                     return;
                 }
-                if ((item.wall === 1) || (World.PLAYER.interaction >= 0)) nwmVM = window.Math.max(0, World.PLAYER.hintRotate - delta);
-                else nwmVM = window.Math.min(900, World.PLAYER.hintRotate + delta);
-            } else nwmVM = window.Math.max(0, World.PLAYER.hintRotate - delta);
+                if ((item.wall === 1) || (World.PLAYER.interaction >= 0)) nwmVM = Math.max(0, World.PLAYER.hintRotate - delta);
+                else nwmVM = Math.min(900, World.PLAYER.hintRotate + delta);
+            } else nwmVM = Math.max(0, World.PLAYER.hintRotate - delta);
             if (nwmVM > 0) {
-                ctx.globalAlpha = MathUtils.Ease.outQuad(window.Math.max(0, nwmVM - 600) / 300);
+                ctx.globalAlpha = MathUtils.Ease.outQuad(Math.max(0, nwmVM - 600) / 300);
                 var imageScale = scaleby + (WvmnV * scaleby);
                 var vNwMN = imageScale / scaleby;
                 var width = (scaleby * hintRotate.width) / 2;
                 var height = (scaleby * hintRotate.height) / 2;
-                ctx.drawImage(hintRotate, ((vertst + NmM) * scaleby) - (width / 2), window.Math.max(10 * scaleby, ((((horist + WWV) * scaleby) - (height / 2)) - (65 * scaleby)) - (60 * scaleby)), width, height);
+                ctx.drawImage(hintRotate, ((vertst + NmM) * scaleby) - (width / 2), Math.max(10 * scaleby, ((((horist + WWV) * scaleby) - (height / 2)) - (65 * scaleby)) - (60 * scaleby)), width, height);
                 ctx.globalAlpha = 1;
             }
             World.PLAYER.hintRotate = nwmVM;
@@ -16420,8 +16196,8 @@ try {
             var NWW = 0;
             var wnN = 0;
             if (player.hit > 0) {
-                player.hit = window.Math.max(0, player.hit - delta);
-                player.hit = window.Math.min(player.hit, weapon.delay);
+                player.hit = Math.max(0, player.hit - delta);
+                player.hit = Math.min(player.hit, weapon.delay);
                 value = (player.hit > weapon.impactClient) ? (1 - ((player.hit - weapon.impactClient) / (weapon.delay - weapon.impactClient))) : (player.hit / weapon.impactClient);
                 nmm = (PLAYER.punch * MathUtils.Ease.inOutQuad(value)) * 0.55;
                 wnN = value * 3;
@@ -16465,7 +16241,7 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt2 / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.food, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
@@ -16478,20 +16254,20 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 3;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 3;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 3;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 3;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(mVn.hurt, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
             if (player.heal > 0) {
                 var mnM = 1;
                 player.heal -= delta;
-                if (player.heal > 150) ctx.globalAlpha = window.Math.min(1, window.Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
+                if (player.heal > 150) ctx.globalAlpha = Math.min(1, Math.max(0, MathUtils.Ease.inQuad((300 - player.heal) / 300)));
                 else {
                     var value = MathUtils.Ease.outQuad(player.heal / 150);
                     mnM += (1 - value) * 0.2;
-                    ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                    ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 }
                 CanvasUtils.drawImageHd(mVn.heal, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
@@ -16511,11 +16287,11 @@ try {
             if (player.removed !== 0) {
                 player.death += delta;
                 var value = MathUtils.Ease.outQuart(1 - ((player.death - 500) / 400));
-                ctx.globalAlpha = window.Math.min(window.Math.max(0, value), 1);
+                ctx.globalAlpha = Math.min(Math.max(0, value), 1);
                 CanvasUtils.drawImageHd(entitie.death, offsetX, offsetY, player.angle, 0, 0, 1);
                 value = MathUtils.Ease.outQuart(1 - (player.death / 400));
-                imageScale = window.Math.min(1 + (0.5 * (1 - value)), 1.5);
-                ctx.globalAlpha = window.Math.max(0, value);
+                imageScale = Math.min(1 + (0.5 * (1 - value)), 1.5);
+                ctx.globalAlpha = Math.max(0, value);
             }
             if ((player.extra & 16) === 16) {
                 player.extra &= ~16;
@@ -16544,16 +16320,16 @@ try {
             if (player.removed !== 0) {
                 player.death += delta;
                 var value = MathUtils.Ease.outQuart(1 - ((player.death - 500) / 400));
-                ctx.globalAlpha = window.Math.min(window.Math.max(0, value), 1);
+                ctx.globalAlpha = Math.min(Math.max(0, value), 1);
                 CanvasUtils.drawImageHd(mVn.death, offsetX, offsetY, player.angle, 0, 0, 1);
                 value = MathUtils.Ease.outQuart(1 - (player.death / 400));
-                imageScale = window.Math.min(1 + (0.5 * (1 - value)), 1.5);
-                ctx.globalAlpha = window.Math.max(0, value);
+                imageScale = Math.min(1 + (0.5 * (1 - value)), 1.5);
+                ctx.globalAlpha = Math.max(0, value);
             }
             if (Vmwnn === 2) {
                 player.state &= 65281;
                 if (AudioUtils._fx.shot[MNmnm] !== 0) {
-                    var VVmnw = window.Math.floor(window.Math.random() * weapon.soundLen);
+                    var VVmnw = Math.floor(Math.random() * weapon.soundLen);
                     AudioUtils.playFx(AudioUtils._fx.shot[MNmnm][VVmnw], weapon.soundVolume, Math2d.distance(World.PLAYER.x, World.PLAYER.y, player.x, player.y) / 4, weapon.soundDelay);
                 }
                 if (player.hit <= 0) {
@@ -16617,7 +16393,7 @@ try {
                     var scalex = (scaleby * nMWVv.width) / 2;
                     var scaley = (scaleby * nMWVv.height) / 2;
                     var posx = ((vertst + NmM) * imageScale) - (scalex / 2);
-                    var posy = window.Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
+                    var posy = Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
                     if (isTouchScreen === 1) {
                         Game.xInteract = posx;
                         Game.yInteract = posy;
@@ -16627,7 +16403,7 @@ try {
                     ctx.drawImage(nMWVv, posx, posy, scalex, scaley);
                     var loot = LOOT[World.PLAYER.loot];
                     posx = ((vertst + NmM) * vNwMN) - (scalex / (2 * scaleby));
-                    posy = window.Math.max(10, ((((horist + WWV) * vNwMN) - (scaley / (2 * scaleby))) - (65 * vNwMN)) - 60);
+                    posy = Math.max(10, ((((horist + WWV) * vNwMN) - (scaley / (2 * scaleby))) - (65 * vNwMN)) - 60);
                     CanvasUtils.drawImageHd(loot, posx + 77, posy + 33, loot.angle, 0, 0, loot.scale);
                     break;
                 case 1:
@@ -16656,12 +16432,12 @@ try {
                     var _x = (vertst + NmM) * imageScale;
                     var _y = (horist + WWV) * imageScale;
                     var posx = _x - (scalex / 2);
-                    var posy = window.Math.max(10 * imageScale, ((_y - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
+                    var posy = Math.max(10 * imageScale, ((_y - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
                     if (delay < 100) ctx.globalAlpha = delay / 100;
                     else if (World.PLAYER.interactionDelay < 100) ctx.globalAlpha = World.PLAYER.interactionDelay / 100;
                     ctx.drawImage(useTimer, posx, posy, scalex, scaley); 
                     ctx.save();
-                    ctx.translate(_x, window.Math.max((10 * imageScale) + (scaley / 2), (_y - (65 * imageScale)) - (60 * scaleby)));
+                    ctx.translate(_x, Math.max((10 * imageScale) + (scaley / 2), (_y - (65 * imageScale)) - (60 * scaleby)));
                     ctx.rotate(-PI2 * value);
                     ctx.drawImage(arrow, -scalex / 2, -scaley / 2, scalex, scaley);
                     ctx.restore();
@@ -16681,7 +16457,7 @@ try {
                     var posx;
                     if (World.PLAYER.extraLoot === 1) posx = (((vertst + NmM) - 5) * imageScale) - scalex;
                     else posx = ((vertst + NmM) * imageScale) - (scalex / 2);
-                    var posy = window.Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
+                    var posy = Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
                     if (isTouchScreen === 1) {
                         Game.xInteract = posx;
                         Game.yInteract = posy;
@@ -16699,7 +16475,7 @@ try {
                         scalex = (scaleby * VWvVN.width) / 2;
                         scaley = (scaleby * VWvVN.height) / 2;
                         posx += scalex + (10 * scaleby);
-                        posy = window.Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
+                        posy = Math.max(10 * scaleby, ((((horist + WWV) * imageScale) - (scaley / 2)) - (65 * imageScale)) - (60 * scaleby));
                         if (isTouchScreen === 1) {
                             Game.xInteract2 = posx;
                             Game.yInteract2 = posy;
@@ -16707,7 +16483,7 @@ try {
                         ctx.drawImage(VWvVN, posx, posy, scalex, scaley);
                         var loot = LOOT[World.PLAYER.loot];
                         posx = ((vertst + NmM) * vNwMN) + 5;
-                        posy = window.Math.max(10, ((((horist + WWV) * vNwMN) - (scaley / (2 * scaleby))) - (65 * vNwMN)) - 60);
+                        posy = Math.max(10, ((((horist + WWV) * vNwMN) - (scaley / (2 * scaleby))) - (65 * vNwMN)) - 60);
                         CanvasUtils.drawImageHd(loot, posx + 77, posy + 33, loot.angle, 0, 0, loot.scale);
                     }
                     break;
@@ -16725,7 +16501,7 @@ try {
             else if (setParticles === 2) amount *= 3;
             if ((Entitie.border[__ENTITIE_PARTICLES__].border + amount) >= wnNWM) return;
             for (var i = 0; i < amount; i++) {
-                var N = window.Math.random();
+                var N = Math.random();
                 var angle = ((N * 10) % 1) * PI2;
                 var MMwmm = distance + (((N * 10000) % 1) * 25);
                 distance += 8;
@@ -16733,14 +16509,14 @@ try {
                 var newEntityIndex = WvWmM + Entitie.maxUnitsMaster;
                 nMVNv += 1;
                 var particle = Entitie.get(0, newEntityIndex, nMVNv, __ENTITIE_PARTICLES__);
-                setEntitie(particle, 0, nMVNv, newEntityIndex, __ENTITIE_PARTICLES__, player.px, player.py, player.px + (window.Math.cos(angle) * MMwmm), player.py + (window.Math.sin(angle) * MMwmm), window.Math.floor(N * PARTICLES[id].length), ((N * 100) % 1) * 255, id);
+                setEntitie(particle, 0, nMVNv, newEntityIndex, __ENTITIE_PARTICLES__, player.px, player.py, player.px + (Math.cos(angle) * MMwmm), player.py + (Math.sin(angle) * MMwmm), Math.floor(N * PARTICLES[id].length), ((N * 100) % 1) * 255, id, 0);
             }
         };
 
         function _Particles(particle) {
             var img = PARTICLES[particle.state][particle.extra];
             if (particle.death > 0) {
-                particle.death = window.Math.min(1, particle.death + (delta / 500));
+                particle.death = Math.min(1, particle.death + (delta / 500));
                 ctx.globalAlpha = 1 - particle.death;
                 CanvasUtils.drawImageHd(img, vertst + particle.x, horist + particle.y, particle.angle, 0, 0, 1);
                 ctx.globalAlpha = 1;
@@ -16777,8 +16553,8 @@ try {
                 if (triggered === 0) {
                     if (spike.hurt2 === 0) vNwNM(spike, item.particles, item.particlesDist, 5);
                     if (spike.hurt2 < 300) {
-                        offsetX += (window.Math.random() * 6) - 4;
-                        offsetY += (window.Math.random() * 6) - 4;
+                        offsetX += (Math.random() * 6) - 4;
+                        offsetY += (Math.random() * 6) - 4;
                         spike.hurt2 += delta;
                     }
                     CanvasUtils.drawImageHd(item.deployed[spike.id % 3], (vertst + spike.x) + offsetX, (horist + spike.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
@@ -16798,12 +16574,12 @@ try {
                 if (triggered === 0) {
                     if (spike.hurt2 === 0) vNwNM(spike, item.particles, item.particlesDist, 5);
                     if (spike.hurt2 < 300) {
-                        offsetX += (window.Math.random() * 6) - 4;
-                        offsetY += (window.Math.random() * 6) - 4;
+                        offsetX += (Math.random() * 6) - 4;
+                        offsetY += (Math.random() * 6) - 4;
                         spike.hurt2 += delta;
                     }
                     if (spike.breath > 0) {
-                        spike.breath = window.Math.max(0, spike.breath - (delta / 5));
+                        spike.breath = Math.max(0, spike.breath - (delta / 5));
                         ctx.globalAlpha = MathUtils.Ease.inOutQuad(spike.breath / 300);
                         CanvasUtils.drawImageHd(item.hidden[spike.id % 3], (vertst + spike.x) + offsetX, (horist + spike.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                         ctx.globalAlpha = 1;
@@ -16812,13 +16588,13 @@ try {
                 } else if (isVisible === 1) {
                     if (spike.breath === 300) CanvasUtils.drawImageHd(item.hidden[spike.id % 3], (vertst + spike.x) + offsetX, (horist + spike.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                     else {
-                        spike.breath = window.Math.min(300, spike.breath + delta);
+                        spike.breath = Math.min(300, spike.breath + delta);
                         ctx.globalAlpha = MathUtils.Ease.inOutQuad(spike.breath / 300);
                         CanvasUtils.drawImageHd(item.hidden[spike.id % 3], (vertst + spike.x) + offsetX, (horist + spike.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                         ctx.globalAlpha = 1;
                     }
                 } else if ((isVisible === 0) && (spike.breath > 0)) {
-                    spike.breath = window.Math.max(0, spike.breath - (delta / 5));
+                    spike.breath = Math.max(0, spike.breath - (delta / 5));
                     ctx.globalAlpha = MathUtils.Ease.inOutQuad(spike.breath / 300);
                     CanvasUtils.drawImageHd(item.hidden[spike.id % 3], (vertst + spike.x) + offsetX, (horist + spike.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                     ctx.globalAlpha = 1;
@@ -16836,14 +16612,14 @@ try {
                 if (isVisible === 1) {
                     if (building.breath === 300) CanvasUtils.drawImageHd(item.building, (vertst + building.x) + offsetX, (horist + building.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                     else {
-                        building.breath = window.Math.min(300, building.breath + delta);
+                        building.breath = Math.min(300, building.breath + delta);
                         ctx.globalAlpha = MathUtils.Ease.inOutQuad(building.breath / 300);
                         CanvasUtils.drawImageHd(item.building, (vertst + building.x) + offsetX, (horist + building.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                         ctx.globalAlpha = 1;
                     }
                 }
                 else if ((isVisible === 0) && (building.breath > 0)) {
-                    building.breath = window.Math.max(0, building.breath - (delta / 5));
+                    building.breath = Math.max(0, building.breath - (delta / 5));
                     ctx.globalAlpha = MathUtils.Ease.inOutQuad(building.breath / 300);
                     CanvasUtils.drawImageHd(item.building, (vertst + building.x) + offsetX, (horist + building.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                     ctx.globalAlpha = 1;
@@ -16875,14 +16651,14 @@ try {
             } else {
             
                 if (isVisible === 1) {
-                    landmine.breath = window.Math.min(300, landmine.breath + delta);
+                    landmine.breath = Math.min(300, landmine.breath + delta);
                     ctx.globalAlpha = MathUtils.Ease.inOutQuad(landmine.breath / 300);
                     CanvasUtils.drawImageHd(item.building[landmine.id % 3], (vertst + landmine.x) + offsetX, (horist + landmine.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
                     ctx.globalAlpha = 1;
                 }
             
                 else if (isVisible === 0) {
-                    landmine.breath = window.Math.min(300, landmine.breath + delta / 5);
+                    landmine.breath = Math.min(300, landmine.breath + delta / 5);
                     ctx.globalAlpha = MathUtils.Ease.inOutQuad(landmine.breath / 300);
                     CanvasUtils.drawImageHd(item.building[landmine.id % 3], (vertst + landmine.x) + offsetX, (horist + landmine.y) + offsetY, rotation * PIby2, 0, 0, imageScale)
                     ctx.globalAlpha = 1;
@@ -16981,8 +16757,8 @@ try {
         function _AutomaticDoor(item, player, offsetX, offsetY, rotation, imageScale) {
             ctx.globalAlpha = 1;
             var MvVvv = (player.state >> 7) & 1;
-            if (MvVvv === 1) player.hitMax = window.Math.min(500, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (MvVvv === 1) player.hitMax = Math.min(500, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             if ((player.hitMax > 0) && (player.hitMax !== 500)) {
                 ctx.globalAlpha = MathUtils.Ease.outQuad(player.hitMax / 500);
                 CanvasUtils.drawImageHd(item.building[1][player.broke], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
@@ -17005,8 +16781,8 @@ try {
         function _Lamp(item, player, offsetX, offsetY, rotation, imageScale) {
             handleProximity(item, player, 0);
             var light = (player.state >> 7) & 1;
-            if (light === 1) player.hitMax = window.Math.min(500, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (light === 1) player.hitMax = Math.min(500, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             if (player.hitMax > 0) {
                 WvnvV[pplonscr++] = player;
                 CanvasUtils.drawImageHd(item.buildingOn[(player.state >> 4) & 7], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
@@ -17032,7 +16808,7 @@ try {
                 player.hitMax = 500;
                 player.hit = NVNvv;
             }
-            if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             var angle = item.angle;
             if (NVNvv === 0) angle *= MathUtils.Ease.inOutQuad(player.hitMax / 500);
             else angle *= MathUtils.Ease.inOutQuad(1 - (player.hitMax / 500));
@@ -17068,7 +16844,7 @@ try {
                 var height = (scaleby * arv.height) / 2;
                 ctx.drawImage(arv, offsetX - (width / 2), offsetY - (height / 2), width, height);
                 ctx.globalAlpha = 1;
-                player.breath = window.Math.max(0, player.breath - delta);
+                player.breath = Math.max(0, player.breath - delta);
             }
         };
         
@@ -17087,8 +16863,8 @@ try {
         function _Furniture(item, player, offsetX, offsetY, rotation, imageScale) {
             var inuse = (player.state >> 4) & 1;
             var objects = INVENTORY[item.id].subtype[player.subtype];
-            if (inuse === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (inuse === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (((inuse === 0) && (objects.usable === 1)) && (handleProximity(objects, player, 0) === 1)) World.PLAYER.eInteract = ICON_E_FURNITURE;
             CanvasUtils.drawImageHd(objects.building, (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
@@ -17106,7 +16882,7 @@ try {
                 if (player.hit <= 0) {
                     player.hit = entitie.actionDelay;
                     player.hitMax = entitie.actionDelay;
-                    var VVmnw = window.Math.floor(window.Math.random() * 3);
+                    var VVmnw = Math.floor(Math.random() * 3);
                     AudioUtils.playFx(AudioUtils._fx.shot[0][VVmnw], 0.5, Math2d.distance(World.PLAYER.x, World.PLAYER.y, player.x, player.y) / 3.5, 0);
                 }
             }
@@ -17115,8 +16891,8 @@ try {
             var NWW = 0;
             var wnN = 0;
             if (player.hit > 0) {
-                player.hit = window.Math.max(0, player.hit - delta);
-                player.hit = window.Math.min(player.hit, entitie.actionDelay);
+                player.hit = Math.max(0, player.hit - delta);
+                player.hit = Math.min(player.hit, entitie.actionDelay);
                 value = (player.hit > entitie.actionImpactClient) ? (1 - ((player.hit - entitie.actionImpactClient) / (entitie.actionDelay - entitie.actionImpactClient))) : (player.hit / entitie.actionImpactClient);
                 nmm = (player.hurt2 * MathUtils.Ease.inOutQuad(value)) * 0.55;
                 wnN = value * 6;
@@ -17155,9 +16931,9 @@ try {
                     value = MathUtils.Ease.outQuad(player.hurt / 150);
                     mnM += (1 - value) * 0.2;
                 }
-                offsetX += (window.Math.cos(player.hurtAngle) * value) * 10;
-                offsetY += (window.Math.sin(player.hurtAngle) * value) * 10;
-                ctx.globalAlpha = window.Math.min(1, window.Math.max(0, value));
+                offsetX += (Math.cos(player.hurtAngle) * value) * 10;
+                offsetY += (Math.sin(player.hurtAngle) * value) * 10;
+                ctx.globalAlpha = Math.min(1, Math.max(0, value));
                 CanvasUtils.drawImageHd(entitie.hurt, offsetX, offsetY, player.angle + (nmm / 1.5), wnN, 0, mnM);
                 ctx.globalAlpha = 1;
             }
@@ -17167,8 +16943,8 @@ try {
         
         function _Workbench(item, player, offsetX, offsetY, rotation, imageScale) {
             var inuse = (player.state >> 4) & 1;
-            if (inuse === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (inuse === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (inuse === 0) handleProximity(item, player, 0);
             CanvasUtils.drawImageHd(item.building, (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
@@ -17189,12 +16965,12 @@ try {
         
         function _Agitator(item, player, offsetX, offsetY, rotation, imageScale) {
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(10000, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (light === 1) player.hitMax = Math.min(10000, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             var value = 0;
             if (player.hitMax > 0) {
                 value = MathUtils.Ease.outQuad(player.hitMax / 10000);
@@ -17208,17 +16984,17 @@ try {
         
         function _Extractor(item, player, offsetX, offsetY, rotation, imageScale) {
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(10000, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (light === 1) player.hitMax = Math.min(10000, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             var value = 0;
             if (player.hitMax > 0) {
                 value = MathUtils.Ease.outQuad(player.hitMax / 10000);
-                offsetX += ((window.Math.random() * 2) - 1) * value;
-                offsetY += ((window.Math.random() * 2) - 1) * value;
+                offsetX += ((Math.random() * 2) - 1) * value;
+                offsetY += ((Math.random() * 2) - 1) * value;
                 player.heal += (value * delta) / 300;
                 CanvasUtils.drawImageHd(item.building[1], ((vertst + player.x) + offsetX) + item.spine[rotation][0], ((horist + player.y) + offsetY) + item.spine[rotation][1], (rotation * PIby2) + player.heal, 0, 0, imageScale);
                 CanvasUtils.drawImageHd(item.building[0], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
@@ -17228,17 +17004,17 @@ try {
 
         function _Feeder(item, player, offsetX, offsetY, rotation, imageScale) {
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(10000, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (light === 1) player.hitMax = Math.min(10000, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             var value = 0;
             if (player.hitMax > 0) {
                 value = MathUtils.Ease.outQuad(player.hitMax / 10000);
-                offsetX += ((window.Math.random() * 2) - 1) * value;
-                offsetY += ((window.Math.random() * 2) - 1) * value;
+                offsetX += ((Math.random() * 2) - 1) * value;
+                offsetY += ((Math.random() * 2) - 1) * value;
                 player.heal += (value * delta) / 300;
                 CanvasUtils.drawImageHd(item.building[1], ((vertst + player.x) + offsetX) + item.spine[rotation][0], ((horist + player.y) + offsetY) + item.spine[rotation][1], (rotation * PIby2) + player.heal, 0, 0, imageScale);
                 CanvasUtils.drawImageHd(item.building[0], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
@@ -17265,19 +17041,19 @@ try {
         
         function _Compost(item, player, offsetX, offsetY, rotation, imageScale) {
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(10000, player.hitMax + delta);
+            if (light === 1) player.hitMax = Math.min(10000, player.hitMax + delta);
             else if (player.hitMax > 0) {
-                player.hitMax = window.Math.max(0, player.hitMax - delta);
+                player.hitMax = Math.max(0, player.hitMax - delta);
             }
             var value = 0;
             if (player.hitMax > 0) {
                 value = MathUtils.Ease.outQuad(player.hitMax / 10000);
-                offsetX += ((window.Math.random() * 2) - 1) * value;
-                offsetY += ((window.Math.random() * 2) - 1) * value;
+                offsetX += ((Math.random() * 2) - 1) * value;
+                offsetY += ((Math.random() * 2) - 1) * value;
                 CanvasUtils.drawImageHd(item.building[0], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             } else CanvasUtils.drawImageHd(item.building[1], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
@@ -17293,19 +17069,19 @@ try {
             matrix[player.i + i][player.j + j].category = window.undefined;
             matrix[player.i - i][player.j - j].category = window.undefined;
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(10000, player.hitMax + delta);
+            if (light === 1) player.hitMax = Math.min(10000, player.hitMax + delta);
             else if (player.hitMax > 0) {
-                player.hitMax = window.Math.max(0, player.hitMax - delta);
+                player.hitMax = Math.max(0, player.hitMax - delta);
             }
             var value = 0;
             if (player.hitMax > 0) {
                 value = MathUtils.Ease.outQuad(player.hitMax / 10000);
-                offsetX += ((window.Math.random() * 2) - 1) * value;
-                offsetY += ((window.Math.random() * 2) - 1) * value;
+                offsetX += ((Math.random() * 2) - 1) * value;
+                offsetY += ((Math.random() * 2) - 1) * value;
                 CanvasUtils.drawImageHd(item.building[1], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             } else CanvasUtils.drawImageHd(item.building[0], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
@@ -17321,16 +17097,16 @@ try {
             matrix[player.i + i][player.j + j].category = window.undefined;
             matrix[player.i - i][player.j - j].category = window.undefined;
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             var light = (player.state >> 5) & 1;
             if (light === 1) player.hitMax = 1 + (player.hitMax + (delta % 300000));
             else player.hitMax = 0;
             var value = 0;
             if (player.hitMax > 0) {
-                CanvasUtils.drawImageHd(item.building[1 + (window.Math.floor(player.hitMax / 500) % 3)], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
-                var light = item.light[window.Math.floor(player.hitMax / 50) % item.light.length];
+                CanvasUtils.drawImageHd(item.building[1 + (Math.floor(player.hitMax / 500) % 3)], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
+                var light = item.light[Math.floor(player.hitMax / 50) % item.light.length];
                 if (light !== 0) CanvasUtils.drawImageHd(light, (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             } else CanvasUtils.drawImageHd(item.building[0], (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
@@ -17354,21 +17130,21 @@ try {
         function _Campfire(item, player, offsetX, offsetY, rotation, imageScale) {
             
             var MWm = (player.state >> 4) & 1;
-            if (MWm === 1) player.hit = window.Math.min(500, player.hit + delta);
-            else if (player.hit > 0) player.hit = window.Math.max(0, player.hit - delta);
+            if (MWm === 1) player.hit = Math.min(500, player.hit + delta);
+            else if (player.hit > 0) player.hit = Math.max(0, player.hit - delta);
             if (MWm === 0) handleProximity(item, player, 0);
             CanvasUtils.drawImageHd(item.building, (vertst + player.x) + offsetX, (horist + player.y) + offsetY, rotation * PIby2, 0, 0, imageScale);
         
             var light = (player.state >> 5) & 1;
-            if (light === 1) player.hitMax = window.Math.min(500, player.hitMax + delta);
-            else if (player.hitMax > 0) player.hitMax = window.Math.max(0, player.hitMax - delta);
+            if (light === 1) player.hitMax = Math.min(500, player.hitMax + delta);
+            else if (player.hitMax > 0) player.hitMax = Math.max(0, player.hitMax - delta);
             if (player.hitMax > 0) WvnvV[pplonscr++] = player;
             if (player.hit > 0) containeropenic(player, offsetX, offsetY);
         };
         
         function _Explosions(player) {
             var img = ENTITIES[__ENTITIE_EXPLOSION__].explosions;
-            var mVn = window.Math.floor(player.born / 70);
+            var mVn = Math.floor(player.born / 70);
             if (mVn < 10) {
                 if (player.born === 0) {
                     if (Render.explosionShake !== -2) Render.explosionShake = 20;
@@ -17395,18 +17171,18 @@ try {
                     vNwNM(resource, WwMWW.particles, type.particlesDist, type.particle);
                 }
                 resource.death += delta;
-                var value = window.Math.max(0, MathUtils.Ease.outQuart(1 - (resource.death / 300)));
+                var value = Math.max(0, MathUtils.Ease.outQuart(1 - (resource.death / 300)));
                 ctx.globalAlpha = value;
-                imageScale = window.Math.min(1 + (0.35 * (1 - value)), 1.35);
+                imageScale = Math.min(1 + (0.35 * (1 - value)), 1.35);
             } else if (resource.born < 700) {
                 if ((resource.born === 0) && (type.imgTop !== window.undefined)) {
-                    if (WMWvN === 0) resource.breath = window.Math.floor(window.Math.random() * 6000);
+                    if (WMWvN === 0) resource.breath = Math.floor(Math.random() * 6000);
                     else {
-                        resource.heal = window.Math.floor(window.Math.random() * 6000);
+                        resource.heal = Math.floor(Math.random() * 6000);
                         resource.breath = 3000;
                     }
                 }
-                var value = window.Math.min(1, MathUtils.Ease.outQuart(resource.born / 700));
+                var value = Math.min(1, MathUtils.Ease.outQuart(resource.born / 700));
                 ctx.globalAlpha = value;
                 imageScale = (0.5 * value) + 0.5;
             }
@@ -17425,8 +17201,8 @@ try {
             var offsetY = 0;
             if (resource.hurt > 0) {
                 var hurt = (resource.hurt > 200) ? ((20 * (250 - resource.hurt)) / 50) : ((20 * resource.hurt) / 200);
-                offsetX = window.Math.cos(resource.hurtAngle) * hurt;
-                offsetY = window.Math.sin(resource.hurtAngle) * hurt;
+                offsetX = Math.cos(resource.hurtAngle) * hurt;
+                offsetY = Math.sin(resource.hurtAngle) * hurt;
                 resource.hurt -= delta;
             }
             if (((resource.breath === 3000) && (WMWvN !== 0)) && (resource.hurt === 0)) {
@@ -17446,12 +17222,12 @@ try {
                 offsetY = 0;
                 if (resource.hurt2 > 0) {
                     var hurt = (resource.hurt2 > 250) ? (10 * MathUtils.Ease.inQuad((300 - resource.hurt2) / 250)) : (10 * MathUtils.Ease.outQuad(resource.hurt2 / 250));
-                    offsetX = window.Math.cos(resource.hurtAngle) * hurt;
-                    offsetY = window.Math.sin(resource.hurtAngle) * hurt;
+                    offsetX = Math.cos(resource.hurtAngle) * hurt;
+                    offsetY = Math.sin(resource.hurtAngle) * hurt;
                     resource.hurt2 -= delta;
                 }
                 if (WMWvN === 0) {
-                    if (resource.heal > 0) resource.heal = window.Math.max(0, resource.heal - delta);
+                    if (resource.heal > 0) resource.heal = Math.max(0, resource.heal - delta);
                     else resource.breath += delta;
                     if (resource.breath > 6000) resource.breath = 0;
                     if (resource.breath > 3000) imageScale += (0.025 * (resource.breath - 3000)) / 3000;
@@ -17460,10 +17236,10 @@ try {
                     if (resource.heal === 0) resource.heal = resource.breath;
                     if (resource.breath > 6000) resource.breath = 0;
                     if (resource.breath > 3000) {
-                        resource.breath = window.Math.max(3000, resource.breath - delta);
+                        resource.breath = Math.max(3000, resource.breath - delta);
                         imageScale += (0.025 * (resource.breath - 3000)) / 3000;
                     } else if (resource.breath < 3000) {
-                        resource.breath = window.Math.min(3000, resource.breath + delta);
+                        resource.breath = Math.min(3000, resource.breath + delta);
                         imageScale += 0.025 - ((0.025 * resource.breath) / 3000);
                     }
                 }
@@ -17513,9 +17289,9 @@ try {
                     }
                 }
                 building.death += delta;
-                var value = window.Math.max(0, MathUtils.Ease.outQuart(1 - (building.death / 300)));
+                var value = Math.max(0, MathUtils.Ease.outQuart(1 - (building.death / 300)));
                 ctx.globalAlpha = value;
-                imageScale = window.Math.min(1 + (0.35 * (1 - value)), 1.35);
+                imageScale = Math.min(1 + (0.35 * (1 - value)), 1.35);
             }
             if ((building.state & 2) === 2) {
                 building.hurt = 250;
@@ -17533,13 +17309,13 @@ try {
             if (building.hurt > 0) {
                 if (building.hurt > 200) {
                     var hurt = (20 * (250 - building.hurt)) / 100;
-                    offsetX = window.Math.cos(building.hurtAngle) * hurt;
-                    offsetY = window.Math.sin(building.hurtAngle) * hurt;
+                    offsetX = Math.cos(building.hurtAngle) * hurt;
+                    offsetY = Math.sin(building.hurtAngle) * hurt;
                     building.hurt -= delta;
                 } else {
                     var hurt = (20 * building.hurt) / 200;
-                    offsetX = window.Math.cos(building.hurtAngle) * hurt;
-                    offsetY = window.Math.sin(building.hurtAngle) * hurt;
+                    offsetX = Math.cos(building.hurtAngle) * hurt;
+                    offsetY = Math.sin(building.hurtAngle) * hurt;
                     building.hurt -= delta;
                 }
             }
@@ -17650,12 +17426,12 @@ try {
             }
             if (bullet.removed !== 0) {
                 bullet.death += delta;
-                progress = window.Math.max(0, MathUtils.Ease.outQuart(1 - (bullet.death / 200)));
+                progress = Math.max(0, MathUtils.Ease.outQuart(1 - (bullet.death / 200)));
                 ctx.globalAlpha = progress;
             }
             var distance = Math2d.fastDist(bullet.nx, bullet.ny, bullet.x, bullet.y);
             if ((distance < 400) || (bullet.removed !== 0)) {
-                ctx.globalAlpha = window.Math.min(distance / 400, progress);
+                ctx.globalAlpha = Math.min(distance / 400, progress);
                 CanvasUtils.drawImageHd(ENTITIES[__ENTITIE_PLAYER__].bullets[bullet.extra][2], vertst + bullet.x, horist + bullet.y, bullet.angle, 0, 0, 1);
                 ctx.globalAlpha = progress;
                 CanvasUtils.drawImageHd(ENTITIES[__ENTITIE_PLAYER__].bullets[bullet.extra][1], vertst + bullet.x, horist + bullet.y, bullet.angle, 0, 0, 1);
@@ -17677,8 +17453,8 @@ try {
                     var WMv = players[PLAYER.locatePlayer];
                     loot.nx = WMv.x;
                     loot.ny = WMv.y;
-                    loot.angleX = window.Math.cos(Math2d.angle(loot.rx, loot.ry, loot.nx, loot.ny));
-                    loot.angleY = window.Math.sin(Math2d.angle(loot.rx, loot.ry, loot.nx, loot.ny));
+                    loot.angleX = Math.cos(Math2d.angle(loot.rx, loot.ry, loot.nx, loot.ny));
+                    loot.angleY = Math.sin(Math2d.angle(loot.rx, loot.ry, loot.nx, loot.ny));
                 }
             }
 
@@ -17716,10 +17492,10 @@ try {
             var vnwmm = 0;
             if (loot.removed !== 0) {
                 loot.death += delta;
-                ctx.globalAlpha = window.Math.max(0, MathUtils.Ease.outQuart(1 - (loot.death / 800)));
+                ctx.globalAlpha = Math.max(0, MathUtils.Ease.outQuart(1 - (loot.death / 800)));
                 vnwmm = loot.death / 2400;
             } else if (loot.born < 500) {
-                var value = window.Math.min(1, MathUtils.Ease.outQuart(loot.born / 500));
+                var value = Math.min(1, MathUtils.Ease.outQuart(loot.born / 500));
                 ctx.globalAlpha = value;
             }
             loot.breath = (loot.breath + delta) % 1500;
@@ -17742,8 +17518,8 @@ try {
             NNmMN[1] = 0;
             NNmMN[2] = 0;
             NNmMN[3] = 0;
-            nearestDistance = 36000;
-            distance12k = 36000;
+            nearestDistance = 12000;
+            distance12k = 12000;
             World.PLAYER.extraLoot    = 0;
             World.PLAYER.buildingId   = -1;
             World.PLAYER.buildingArea = -1;
@@ -18269,7 +18045,7 @@ try {
             }
             var value = MathUtils.Ease.inOutQuad(((wMmwW > 750) ? (1500 - wMmwW) : wMmwW) / 750);
             if (((NNWWn < 750) && (wMmwW > 750)) && ((1500 - wMmwW) > NNWWn)) {
-                var WmNnV = window.Math.max(0, (1500 - wMmwW) / 750);
+                var WmNnV = Math.max(0, (1500 - wMmwW) / 750);
                 value = (0.5 * WmNnV) + (value * (1 - 0.5));
             } else if (VnwwM > 750) value = 0.5 + (value * (1 - 0.5));
             var mvWMM = value * 20;
@@ -18348,7 +18124,7 @@ try {
             ctx.globalAlpha = value;
             ctx.drawImage(vvMWV, 0, 0, canw, canh);
             ctx.globalAlpha = 1;
-            World.transition = window.Math.max(0, World.transition - delta);
+            World.transition = Math.max(0, World.transition - delta);
             if (World.transition === 0) World.changeDayCycle();
         };
 
@@ -18664,8 +18440,8 @@ ENTITIES[__ENTITIE_PLAYER__].update = function updateEntitiePlayer(entity, offse
         entity.rx = offsetX;
         entity.ry = offsetY;
         var angle = Math2d.angle(entity.rx, entity.ry, entity.nx, entity.ny);
-        entity.angleX = window.Math.cos(angle);
-        entity.angleY = window.Math.sin(angle);
+        entity.angleX = Math.cos(angle);
+        entity.angleY = Math.sin(angle);
     }
     entity.speed = (entity.state >> 8) / 100;
 };
@@ -18691,7 +18467,7 @@ ENTITIES[__ENTITIE_LOOT__].init = function initEntitieLoot(entity) {
         entity.angle = Math2d.angle(entity.x, entity.y, entity.rx, entity.ry);
         entity.nangle = entity.angle;
     } else {
-        entity.angle += window.Math.PI / 2;
+        entity.angle += Math.PI / 2;
         entity.nangle = entity.angle;
     }
 };
@@ -18719,28 +18495,29 @@ ENTITIES[__ENTITIE_BULLET__].init = function initEntitieBullet(entity) {
 };
 ENTITIES[__ENTITIE_BULLET__].update = function updateEntitieBullet(entity, offsetX, offsetY) {
     var angle = Math2d.angle(entity.x, entity.y, entity.nx, entity.ny);
-    var pi2 = window.Math.PI * 2;
+    var pi2 = Math.PI * 2;
     var vWWMM = (((angle + pi2) % pi2) - ((entity.hurtAngle + pi2) % pi2)) % pi2;
-    if (window.Math.abs(vWWMM) > 0.1) {
+    if (Math.abs(vWWMM) > 0.1) {
         entity.rx = entity.x;
         entity.ry = entity.y;
         entity.nx = entity.x;
         entity.ny = entity.y;
     }
 };
-ENTITIES[__ENTITIE_RESOURCES_TOP__].update = function updateEntitieBuilding() {
+ENTITIES[__ENTITIE_RESOURCES_TOP__].update = function updateEntitieBuilding(entity, offsetX, offsetY) {
+    entity.px = entity.x;
+    entity.py = entity.y;
 };
 ENTITIES[__ENTITIE_RESOURCES_DOWN__].update = ENTITIES[__ENTITIE_RESOURCES_TOP__].update;
 ENTITIES[__ENTITIE_RESOURCES_MID__].update = ENTITIES[__ENTITIE_RESOURCES_TOP__].update;
 ENTITIES[__ENTITIE_RESOURCES_STOP__].update = ENTITIES[__ENTITIE_RESOURCES_TOP__].update;
 ENTITIES[__ENTITIE_BUILD_TOP__].update = function updateEntitieBuilding(entity, offsetX, offsetY) {
     var rotation = (entity.extra >> 5) & 3;
-    entity.subtype = (entity.state >> 5) & 63;
     entity.broke = entity.state >> 14;
     entity.state = entity.state & 16383;
     var item = INVENTORY[entity.extra >> 7];
-    entity.x = ((window.Math.floor(offsetX / Render.__TILE_SIZE__) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.xCenter[rotation];
-    entity.y = ((window.Math.floor(offsetY / Render.__TILE_SIZE__) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.yCenter[rotation];
+    entity.x = ((Math.floor(offsetX / Render.__TILE_SIZE__) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.xCenter[rotation];
+    entity.y = ((Math.floor(offsetY / Render.__TILE_SIZE__) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.yCenter[rotation];
     entity.rx = entity.x;
     entity.ry = entity.y;
     entity.nx = entity.x;
@@ -18748,8 +18525,8 @@ ENTITIES[__ENTITIE_BUILD_TOP__].update = function updateEntitieBuilding(entity, 
     entity.px = entity.x;
     entity.py = entity.y;
     if ((item.door === 1) && ((entity.state & 16) === 16)) {
-        entity.px = ((window.Math.floor(entity.j + item.jMove[rotation]) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.xCenter[(rotation + 1) % 4];
-        entity.py = ((window.Math.floor(entity.i + item.iMove[rotation]) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.yCenter[(rotation + 1) % 4];
+        entity.px = ((Math.floor(entity.j + item.jMove[rotation]) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.xCenter[(rotation + 1) % 4];
+        entity.py = ((Math.floor(entity.i + item.iMove[rotation]) * Render.__TILE_SIZE__) + Render.__TILE_SIZE2__) + item.yCenter[(rotation + 1) % 4];
     }
 };
 ENTITIES[__ENTITIE_BUILD_DOWN__].update = ENTITIES[__ENTITIE_BUILD_TOP__].update;
@@ -19005,6 +18782,21 @@ var IID = {
     __CABLE4__:                 COUNTER++,
     __GATE_TIMER__:             COUNTER++,
     __GATE_XOR__:               COUNTER++,
+    __FEEDER__:                 COUNTER++,
+    __GINGERBREAD_WALL__:       COUNTER++,
+    __GINGERBREAD_DOOR__:       COUNTER++,
+    __GINGERBREAD_CABLE_WALL__: COUNTER++,
+    __GINGERBREAD_AUTO_DOOR__:  COUNTER++,
+    __CHRISTMAS_HAT__:          COUNTER++,
+    __DEER_HAT__:               COUNTER++,
+    __SNOWMAN_HAT__:            COUNTER++,
+    __CHRISTMAS_CAKE__:         COUNTER++,
+    __ROTTEN_CHRISTMAS_CAKE__:  COUNTER++,
+    __GINGERBREAD_MAN__:        COUNTER++,
+    __ROTTEN_GINGERBREAD_MAN__: COUNTER++,
+    __ELF_HAT__:                COUNTER++,
+    __SUGAR_CAN__:              COUNTER++,
+    __SUGAR_CAN_BOW__:          COUNTER++,
     __BUILDER_1__:              COUNTER++,
     __BUILDER_2__:              COUNTER++,
     __INV_1__:                  COUNTER++,
@@ -19013,7 +18805,6 @@ var IID = {
     __INV_4__:                  COUNTER++,
     __INV_5__:                  COUNTER++,
     __FEATHERWEIGHT__:          COUNTER++,
-    __FEEDER__:                 COUNTER++
 };
 COUNTER = 0;
 var LOOTID = {
@@ -19178,7 +18969,21 @@ var LOOTID = {
     __CABLE4__:                 COUNTER++,
     __GATE_TIMER__:             COUNTER++,
     __GATE_XOR__:               COUNTER++,
-    __FEEDER__:                 COUNTER++
+    __FEEDER__:                 COUNTER++,
+    __GINGERBREAD_WALL__:       COUNTER++,
+    __GINGERBREAD_DOOR__:       COUNTER++,
+    __GINGERBREAD_CABLE_WALL__: COUNTER++,
+    __GINGERBREAD_AUTO_DOOR__:  COUNTER++,
+    __CHRISTMAS_HAT__:          COUNTER++,
+    __DEER_HAT__:               COUNTER++,
+    __SNOWMAN_HAT__:            COUNTER++,
+    __CHRISTMAS_CAKE__:         COUNTER++,
+    __ROTTEN_CHRISTMAS_CAKE__:  COUNTER++,
+    __GINGERBREAD_MAN__:        COUNTER++,
+    __ROTTEN_GINGERBREAD_MAN__: COUNTER++,
+    __ELF_HAT__:                COUNTER++,
+    __SUGAR_CAN__:              COUNTER++,
+    __SUGAR_CAN_BOW__:          COUNTER++
 };
 
 COUNTER = 0;
@@ -21868,7 +21673,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -21972,7 +21777,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -22076,7 +21881,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -22792,7 +22597,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI,
+    angle: Math.PI,
     iMove: [1, -1, -1, 1],
     jMove: [-1, -1, 1, 1],
     xMove: [0, 0, 0, 0],
@@ -22896,7 +22701,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI,
+    angle: Math.PI,
     iMove: [1, -1, -1, 1],
     jMove: [-1, -1, 1, 1],
     xMove: [0, 0, 0, 0],
@@ -23000,7 +22805,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI,
+    angle: Math.PI,
     iMove: [1, -1, -1, 1],
     jMove: [-1, -1, 1, 1],
     xMove: [0, 0, 0, 0],
@@ -23364,7 +23169,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     draw: Render.workbench,
     packetId: 25,
     interact: {
@@ -23441,7 +23246,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     draw: Render.workbench,
     packetId: 25,
     interact: {
@@ -24272,7 +24077,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -24559,7 +24364,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -24846,7 +24651,7 @@ var INVENTORY = [{
     wire: 0,
     subtype: 0,
     collision: 1,
-    angle: window.Math.PI / 2,
+    angle: Math.PI / 2,
     iMove: [1, 0, -1, 0],
     jMove: [0, -1, 0, 1],
     xMove: [0, 0, 65, 0],
@@ -30795,7 +30600,905 @@ var INVENTORY = [{
     life: 250,
     score: 0
 },
-
+{
+    id: IID.__FEEDER__,
+    itemButton: {
+      src: ["img/inv-feeder-out.png", "img/inv-feeder-in.png", "img/inv-feeder-click.png"],
+      img: [{
+        isLoaded: 0
+      }, {
+        isLoaded: 0
+      }, {
+        isLoaded: 0
+      }]
+    },
+    detail: new Detail("Feeder", "Allows you to feed automatically", SKILLS.__SURVIVAL__, [[IID.__ALLOYS__, 4], [IID.__SHAPED_METAL__, 20], [IID.__SHAPED_URANIUM__, 8], [IID.__SMALL_WIRE__, 4], [IID.__ELECTRONICS__, 2]], 1, [[AREAS.__TESLA__, 100000]], 12),
+    idWeapon: 21,
+    fuel: 180000,
+    zid: 0,
+    z: 1,
+    area: AREAS.__FEEDER__,
+    stack: 255,
+    loot: LOOTID.__FEEDER__,
+    wait: 10,
+    delay: 1000,
+    width: [100, 100, 100, 100],
+    height: [100, 100, 100, 100],
+    xCenter: [0, 0, 0, 0],
+    yCenter: [0, 0, 0, 0],
+    _x: [0, 0, 0, 0],
+    _y: [0, 0, 0, 0],
+    blueprint: {
+      src: "img/clear-blue-feeder.png",
+      img: {
+        isLoaded: 0
+      }
+    },
+    redprint: {
+      src: "img/redprint-feeder.png",
+      img: {
+        isLoaded: 0
+      }
+    },
+    wall: 0,
+    lowWall: 0,
+    door: 0,
+    broke: 0,
+    explosion: 0,
+    behavior: BEHAVIOR.__NO__,
+    wire: 0,
+    subtype: 0,
+    collision: 0,
+    areaEffect: 3,
+    draw: Render.feeder,
+    packetId: 16,
+    interact: {
+      src: "img/e-feeder.png",
+      img: {
+        isLoaded: 0
+      }
+    },
+    impact: SOUNDID.__STEEL_IMPACT__,
+    destroy: SOUNDID.__STEEL_DESTROY__,
+    building: [{
+      src: "img/day-feeder.png",
+      img: {
+        isLoaded: 0
+      }
+    }, {
+      src: "img/day-feeder-rotate.png",
+      img: {
+        isLoaded: 0
+      }
+    }, {
+      src: "img/day-feeder-off.png",
+      img: {
+        isLoaded: 0
+      }
+    }],
+    spine: [[0, 0], [0, 0], [0, 0], [0, 0]],
+    particles: PARTICLESID.__METAL__,
+    particlesDist: 80,
+    timelife: 315360000000,
+    life: 250,
+    score: 0
+}, {
+    id: IID.__GINGERBREAD_WALL__,
+    itemButton: {
+        src: ["img/inv-gingerbread-wall-out.png", "img/inv-gingerbread-wall-in.png", "img/inv-gingerbread-wall-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Gingerbread Wall", "Unbreakable, like gingerbread of course", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 21,
+    fuel: -1,
+    zid: 1,
+    z: 1,
+    stack: 255,
+    loot: LOOTID.__GINGERBREAD_WALL__,
+    wait: 10,
+    delay: 1000,
+    width: [100, 100, 100, 100],
+    height: [100, 100, 100, 100],
+    xCenter: [0, 0, 0, 0],
+    yCenter: [0, 0, 0, 0],
+    _x: [0, 0, 0, 0],
+    _y: [0, 0, 0, 0],
+    blueprint: {
+        src: "img/clear-blue-gingerbread-wall.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    redprint: {
+        src: "img/redprint-gingerbread-wall.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    wall: 1,
+    lowWall: 0,
+    door: 0,
+    broke: 0,
+    explosion: 0,
+    behavior: BEHAVIOR.__NO__,
+    wire: 0,
+    subtype: 0,
+    collision: 1,
+    areaEffect: 0,
+    draw: Render.wall,
+    drawFloor: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    broken: [{
+        src: "img/day-steel-wall-broken0.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall-broken1.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall-broken2.png",
+        img: {
+            isLoaded: 0
+        }
+    }],
+    impact: SOUNDID.__WOOD_IMPACT__,
+    destroy: SOUNDID.__WOOD_DESTROY__,
+    building: [{
+        src: "img/day-gingerbread-wall0.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall1.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall2.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall3.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall4.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall5.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall6.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall7.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall8.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall9.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall10.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall11.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall12.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall13.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall14.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall15.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall16.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall17.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall18.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-gingerbread-wall19.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall20.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall21.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall22.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall23.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall24.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall25.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall26.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall27.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall28.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall29.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall30.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall31.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall32.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall33.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall34.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall35.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall36.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall37.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall38.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall39.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall40.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall41.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall42.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall43.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall44.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall45.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-steel-wall46.png",
+        img: {
+            isLoaded: 0
+        }
+    }],
+    particles: PARTICLESID.__NOTHING__,
+    particlesDist: 80,
+    timelife: 315360000000,
+    life: 10000000000000000,
+    score: 0
+}, {
+    id: IID.__GINGERBREAD_DOOR__,
+    itemButton: {
+        src: ["img/inv-wood-door-out.png", "img/inv-wood-door-in.png", "img/inv-wood-door-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Gingerbread Door", "Unbreakable, like gingerbread of course", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 21,
+    fuel: -1,
+    zid: 0,
+    z: 0,
+    stack: 255,
+    loot: LOOTID.__GINGERBREAD_DOOR__,
+    wait: 10,
+    delay: 600,
+    width: [100, 35, 100, 35],
+    height: [35, 100, 35, 100],
+    xCenter: [0, -30, 0, 30],
+    yCenter: [30, 0, -30, 0],
+    _x: [0, 0, 0, 65],
+    _y: [65, 0, 0, 0],
+    blueprint: {
+        src: "img/clear-blue-gingerbread-door.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    redprint: {
+        src: "img/redprint-gingerbread-door.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    wall: 0,
+    lowWall: 0,
+    door: 1,
+    broke: 0,
+    explosion: 0,
+    behavior: BEHAVIOR.__NO__,
+    wire: 0,
+    subtype: 0,
+    collision: 1,
+    angle: Math.PI / 2,
+    iMove: [1, 0, -1, 0],
+    jMove: [0, -1, 0, 1],
+    xMove: [0, 0, 65, 0],
+    yMove: [0, 0, 0, 65],
+    wMove: [35, 100, 35, 100],
+    hMove: [100, 35, 100, 35],
+    xRotate: 6,
+    yRotate: 46,
+    draw: Render.door,
+    packetId: 15,
+    interact: {
+        src: "img/e-opendoor.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    interactclose: {
+        src: "img/e-closedoor.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    broken: [{
+        src: "img/day-wood-door-broken0.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-wood-door-broken1.png",
+        img: {
+            isLoaded: 0
+        }
+    }, {
+        src: "img/day-wood-door-broken2.png",
+        img: {
+            isLoaded: 0
+        }
+    }],
+    impact: SOUNDID.__WOOD_IMPACT__,
+    destroy: SOUNDID.__WOOD_DESTROY__,
+    building: {
+        src: "img/day-gingerbread-door.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    particles: PARTICLESID.__NOTHING__,
+    particlesDist: 55,
+    timelife: 315360000000,
+    life: 10000000000000000,
+    score: 0
+}, {
+    id: IID.__GINGERBREAD_CABLE_WALL__,
+    itemButton: {
+        src: ["img/inv-cable-ginger-wall-out.png", "img/inv-cable-ginger-wall-in.png", "img/inv-cable-ginger-wall-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Gingerbread Cable/Wall", "Unbreakable, like gingerbread of course", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    stack: 255,
+    loot: LOOTID.__GINGERBREAD_CABLE_WALL__,
+    wait: 10,
+    idWeapon: 21,
+    fuel: -1,
+    zid: 0,
+    z: 1,
+    delay: 1000,
+    width: [100, 100, 100, 100],
+    height: [100, 100, 100, 100],
+    xCenter: [0, 0, 0, 0],
+    yCenter: [0, 0, 0, 0],
+    _x: [0, 0, 0, 0],
+    _y: [0, 0, 0, 0],
+    blueprint: {
+        src: "img/clear-blue-cable-gingerbread-wall.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    redprint: {
+        src: "img/redprint-cable-gingerbread-wall.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    wall: 0,
+    lowWall: 0,
+    door: 0,
+    broke: 0,
+    explosion: 0,
+    behavior: BEHAVIOR.__LOGIC__,
+    gate: 0,
+    wire: [
+        [1, 1, 0, 0],
+        [0, 0, 1, 1],
+        [1, 1, 0, 0],
+        [0, 0, 1, 1]
+    ],
+    subtype: 0,
+    collision: 1,
+    areaEffect: 0,
+    draw: Render.breakable,
+    impact: SOUNDID.__WOOD_IMPACT__,
+    destroy: SOUNDID.__WOOD_DESTROY__,
+    building: [{
+        src: "img/day-cable-gingerbread-wall.png",
+        img: {
+            isLoaded: 0
+        }
+    }],
+    particles: PARTICLESID.__NOTHING__,
+    particlesDist: 40,
+    timelife: 315360000000,
+    life: 10000000000000000,
+    score: 0
+}, {
+    id: IID.__GINGERBREAD_AUTO_DOOR__,
+    itemButton: {
+        src: ["img/inv-gingerbread-automatic-door-out.png", "img/inv-gingerbread-automatic-door-in.png", "img/inv-gingerbread-automatic-door-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Gingerbread Automat\' Door", "Unbreakable, like gingerbread of course", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    stack: 255,
+    loot: LOOTID.__GINGERBREAD_AUTO_DOOR__,
+    wait: 10,
+    idWeapon: 21,
+    fuel: -1,
+    zid: 0,
+    z: 1,
+    delay: 1000,
+    width: [100, 100, 100, 100],
+    height: [100, 100, 100, 100],
+    xCenter: [0, 0, 0, 0],
+    yCenter: [0, 0, 0, 0],
+    _x: [0, 0, 0, 0],
+    _y: [0, 0, 0, 0],
+    blueprint: {
+        src: "img/clear-blue-gingerbread-automatic-door.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    redprint: {
+        src: "img/redprint-gingerbread-automatic-door.png",
+        img: {
+            isLoaded: 0
+        }
+    },
+    wall: 0,
+    lowWall: 0,
+    door: 0,
+    broke: 0,
+    explosion: 0,
+    behavior: BEHAVIOR.__LOGIC__,
+    gate: 0,
+    wire: [
+        [0, 1, 1, 1],
+        [1, 1, 1, 0],
+        [1, 0, 1, 1],
+        [1, 1, 0, 1]
+    ],
+    subtype: 0,
+    collision: 1,
+    areaEffect: 0,
+    draw: Render.automaticDoor,
+    impact: SOUNDID.__WOOD_IMPACT__,
+    destroy: SOUNDID.__WOOD_DESTROY__,
+    building: [
+        [{
+            src: "img/day-gingerbread-automatic-door-off.png",
+            img: {
+                isLoaded: 0
+            }
+        }],
+        [{
+            src: "img/day-gingerbread-automatic-door-on.png",
+            img: {
+                isLoaded: 0
+            }
+        }]
+    ],
+    particles: PARTICLESID.__NOTHING__,
+    particlesDist: 80,
+    timelife: 315360000000,
+    life: 10000000000000000,
+    score: 0
+}, {
+    id: IID.__CHRISTMAS_HAT__,
+    itemButton: {
+        src: ["img/inv-christmas-hat-out.png", "img/inv-christmas-hat-in.png", "img/inv-christmas-hat-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Christmas Hat", "Warm you up", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idClothe: 17,
+    stack: 1,
+    loot: LOOTID.__CHRISTMAS_HAT__,
+    wait: 10,
+    warm: 0.0026,
+    def: 0,
+    bul: 0,
+    ene: 0,
+    boom: 0,
+    rad: 0,
+    speed: 0
+}, {
+    id: IID.__DEER_HAT__,
+    itemButton: {
+        src: ["img/inv-deer-hat-out.png", "img/inv-deer-hat-in.png", "img/inv-deer-hat-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Rudolph Hat", "You\'re faster", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idClothe: 18,
+    stack: 1,
+    loot: LOOTID.__DEER_HAT__,
+    wait: 10,
+    warm: 0,
+    def: 0,
+    bul: 0,
+    ene: 0,
+    boom: 0,
+    rad: 0,
+    speed: 0.02
+}, {
+    id: IID.__SNOWMAN_HAT__,
+    itemButton: {
+        src: ["img/inv-snowman-hat-out.png", "img/inv-snowman-hat-in.png", "img/inv-snowman-hat-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Snowman Hat", "Good protection for melee and fire weapons", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idClothe: 19,
+    stack: 1,
+    loot: LOOTID.__SNOWMAN_HAT__,
+    wait: 10,
+    warm: 0.0016,
+    def: 0.35,
+    bul: 0.35,
+    ene: 0.35,
+    boom: 0.35,
+    rad: 0.01,
+    speed: -0.04
+}, {
+    id: IID.__CHRISTMAS_CAKE__,
+    itemButton: {
+        src: ["img/inv-christmas-cake-out.png", "img/inv-christmas-cake-in.png", "img/inv-christmas-cake-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Christmas Cake", "One per year. Enjoy your meal!", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 54,
+    stack: 20,
+    loot: LOOTID.__CHRISTMAS_CAKE__,
+    perish: 2,
+    perishId: IID.__ROTTEN_CHRISTMAS_CAKE__,
+    wait: 10
+}, {
+    id: IID.__ROTTEN_CHRISTMAS_CAKE__,
+    itemButton: {
+        src: ["img/inv-rotten-christmas-cake-out.png", "img/inv-rotten-christmas-cake-in.png", "img/inv-rotten-christmas-cake-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Rotten Christmas Cake", "When it\'s dinner time, leave your PC and go eat.", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    stack: 20,
+    loot: LOOTID.__ROTTEN_CHRISTMAS_CAKE__,
+    wait: 5,
+    idWeapon: 55,
+    score: 20
+}, {
+    id: IID.__GINGERBREAD_MAN__,
+    itemButton: {
+        src: ["img/inv-gingerbread-man-out.png", "img/inv-gingerbread-man-in.png", "img/inv-gingerbread-man-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("The Little Gingerbread Man", "Tasty!", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 56,
+    stack: 20,
+    loot: LOOTID.__GINGERBREAD_MAN__,
+    perish: 2,
+    perishId: IID.__ROTTEN_GINGERBREAD_MAN__,
+    wait: 10
+}, {
+    id: IID.__ROTTEN_GINGERBREAD_MAN__,
+    itemButton: {
+        src: ["img/inv-rotten-gingerbread-man-out.png", "img/inv-rotten-gingerbread-man-in.png", "img/inv-rotten-gingerbread-man-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("The Old Gingerbread Man", "Its sponge cake rotted a little bit.", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    stack: 20,
+    loot: LOOTID.__ROTTEN_GINGERBREAD_MAN__,
+    wait: 5,
+    idWeapon: 57,
+    score: 20
+}, {
+    id: IID.__ELF_HAT__,
+    itemButton: {
+        src: ["img/inv-elf-hat-out.png", "img/inv-elf-hat-in.png", "img/inv-elf-hat-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Elf hat", "Warm you up a bit and you\'re faster", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idClothe: 20,
+    stack: 1,
+    loot: LOOTID.__ELF_HAT__,
+    wait: 10,
+    warm: 0.0016,
+    def: 0,
+    bul: 0,
+    ene: 0,
+    boom: 0,
+    rad: 0,
+    speed: 0.01
+}, {
+    id: IID.__SUGAR_CAN__,
+    itemButton: {
+        src: ["img/inv-sugar-can-out.png", "img/inv-sugar-can-in.png", "img/inv-sugar-can-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Giant Sugar Can", "You\'re strong with it", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 58,
+    stack: 1,
+    loot: LOOTID.__SUGAR_CAN__,
+    wait: 10
+}, {
+    id: IID.__SUGAR_CAN_BOW__,
+    itemButton: {
+        src: ["img/inv-sugar-can-bow-out.png", "img/inv-sugar-can-bow-in.png", "img/inv-sugar-can-bow-click.png"],
+        img: [{
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }, {
+            isLoaded: 0
+        }]
+    },
+    detail: new Detail("Sugar Can", "Mmmh... Tasty!", -1, [
+        [IID.__WOOD__, 1]
+    ], 1, [
+        [AREAS.__WORKBENCH__, 30000]
+    ], 99),
+    idWeapon: 59,
+    stack: 20,
+    loot: LOOTID.__SUGAR_CAN_BOW__,
+    wait: 10
+},
 {
     id: IID.__BUILDER_1__,
     itemButton: {
@@ -30904,11 +31607,7 @@ var INVENTORY = [{
     },
     detail: new Detail("Inventory 5", "Add three slots in your bag", SKILLS.__SKILL__, window.undefined, window.undefined, window.undefined, 12, IID.__INV_4__, 3),
     bag: 3
-},
-
-
-
-    
+},    
 {
     id: IID.__FEATHERWEIGHT__,
     itemButton: {
@@ -30923,90 +31622,6 @@ var INVENTORY = [{
     },
     detail: new Detail("Light Weight", "Less likely to trigger traps.", SKILLS.__SKILL__, window.undefined, window.undefined, window.undefined, 8)
 },
-
-{
-    id: IID.__FEEDER__,
-    itemButton: {
-      src: ["img/inv-feeder-out.png?2", "img/inv-feeder-in.png?2", "img/inv-feeder-click.png?2"],
-      img: [{
-        isLoaded: 0
-      }, {
-        isLoaded: 0
-      }, {
-        isLoaded: 0
-      }]
-    },
-    detail: new Detail("Feeder", "Allows you to feed automatically", SKILLS.__SURVIVAL__, [[IID.__ALLOYS__, 4], [IID.__SHAPED_METAL__, 20], [IID.__SHAPED_URANIUM__, 8], [IID.__SMALL_WIRE__, 4], [IID.__ELECTRONICS__, 2]], 1, [[AREAS.__TESLA__, 100000]], 12),
-    idWeapon: 21,
-    fuel: 180000,
-    zid: 0,
-    z: 1,
-    area: AREAS.__FEEDER__,
-    stack: 255,
-    loot: LOOTID.__FEEDER__,
-    wait: 10,
-    delay: 1000,
-    width: [100, 100, 100, 100],
-    height: [100, 100, 100, 100],
-    xCenter: [0, 0, 0, 0],
-    yCenter: [0, 0, 0, 0],
-    _x: [0, 0, 0, 0],
-    _y: [0, 0, 0, 0],
-    blueprint: {
-      src: "img/clear-blue-feeder.png?2",
-      img: {
-        isLoaded: 0
-      }
-    },
-    redprint: {
-      src: "img/redprint-feeder.png?2",
-      img: {
-        isLoaded: 0
-      }
-    },
-    wall: 0,
-    lowWall: 0,
-    door: 0,
-    broke: 0,
-    explosion: 0,
-    behavior: BEHAVIOR.__NO__,
-    wire: 0,
-    subtype: 0,
-    collision: 0,
-    areaEffect: 3,
-    draw: Render.feeder,
-    packetId: 16,
-    interact: {
-      src: "img/e-feeder.png?2",
-      img: {
-        isLoaded: 0
-      }
-    },
-    impact: SOUNDID.__STEEL_IMPACT__,
-    destroy: SOUNDID.__STEEL_DESTROY__,
-    building: [{
-      src: "img/day-feeder.png?2",
-      img: {
-        isLoaded: 0
-      }
-    }, {
-      src: "img/day-feeder-rotate.png?2",
-      img: {
-        isLoaded: 0
-      }
-    }, {
-      src: "img/day-feeder-off.png?2",
-      img: {
-        isLoaded: 0
-      }
-    }],
-    spine: [[0, 0], [0, 0], [0, 0], [0, 0]],
-    particles: PARTICLESID.__METAL__,
-    particlesDist: 80,
-    timelife: 315360000000,
-    life: 250,
-    score: 0
-}
 ];
 
 COUNTER = 0;
@@ -31053,10 +31668,24 @@ var FURNITUREID = {
     __DISTRIBUTOR0__:       COUNTER++,
     __CASH0__:              COUNTER++,
     __RENFORCED__:          COUNTER++,
+    __SOFA5__:              COUNTER++,
     __SOFA6__:              COUNTER++,
+    __DAY_GIFT0__:          COUNTER++,
+    __DAY_GIFT1__:          COUNTER++,
+    __DAY_GIFT2__:          COUNTER++,
+    __DAY_GIFT3__:          COUNTER++,
+    __DAY_GIFT4__:          COUNTER++,
+    __PLUSH__DEVASTER__:    COUNTER++,
+    __CHRISTMAS_TREE__:     COUNTER++,
     __GOLD_CHAIR0__:        COUNTER++,
     __GREEN_CHAIR0__:       COUNTER++,
     __WOOD_CHAIR0__:        COUNTER++,
+    __CARPET0__:            COUNTER++,
+    __CARPET1__:            COUNTER++,
+    __CARPET2__:            COUNTER++,
+    __CARPET3__:            COUNTER++,
+    __CHISTMAS_SOCK__:      COUNTER++,
+    __TABLE_TREE__:         COUNTER++,
     __TABLE1__:             COUNTER++,
     __SMALL_LIGHT__:        COUNTER++,
     __BED2__:               COUNTER++,
@@ -31094,7 +31723,7 @@ ROAD[COUNTER] = {
     score: 0,
     particles: PARTICLESID.__NOTHING__,
     particlesDist: 70,
-    angle: window.Math.PI,
+    angle: Math.PI,
     usable: 0,
     fridge: 0,
     loot: null,
@@ -31132,7 +31761,7 @@ FURNITURE[FURNITUREID.__SOFA0__] = {
     score: 0,
     particles: PARTICLESID.__SOFA0__,
     particlesDist: 70,
-    angle: window.Math.PI,
+    angle: Math.PI,
     usable: 0,
     fridge: 0,
     loot: null,
@@ -31769,6 +32398,114 @@ FURNITURE[FURNITUREID.__TOILET0__].loot = [
     [IID.__GHOUL_BLOOD__, 1, 0.005],
     [IID.__LAPADONE__, 1, 0.002]
 ];
+FURNITURE[FURNITUREID.__SOFA5__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__SOFA3__]));
+FURNITURE[FURNITUREID.__SOFA5__].building.src = "img/day-sofa5.png";
+FURNITURE[FURNITUREID.__CARPET0__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__SOFA3__]));
+FURNITURE[FURNITUREID.__CARPET0__].building.src = "img/day-carpet0.png";
+FURNITURE[FURNITUREID.__CARPET0__].collision = 0;
+FURNITURE[FURNITUREID.__CARPET0__].z = 0;
+FURNITURE[FURNITUREID.__CARPET0__].particles = PARTICLESID.__GOLD__;
+FURNITURE[FURNITUREID.__CARPET0__].detail = new Detail("", "", -1, [
+    [IID.__LEATHER_BOAR__, 8]
+]);
+FURNITURE[FURNITUREID.__CARPET1__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__CARPET0__]));
+FURNITURE[FURNITUREID.__CARPET1__].building.src = "img/day-carpet1.png";
+FURNITURE[FURNITUREID.__CARPET1__].collision = 0;
+FURNITURE[FURNITUREID.__CARPET2__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__CARPET0__]));
+FURNITURE[FURNITUREID.__CARPET2__].building.src = "img/day-carpet2.png";
+FURNITURE[FURNITUREID.__CARPET2__].collision = 0;
+FURNITURE[FURNITUREID.__CARPET3__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__CARPET0__]));
+FURNITURE[FURNITUREID.__CARPET3__].building.src = "img/day-carpet3.png";
+FURNITURE[FURNITUREID.__CHISTMAS_SOCK__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__CARPET0__]));
+FURNITURE[FURNITUREID.__CHISTMAS_SOCK__].building.src = "img/day-sock-christmas.png";
+FURNITURE[FURNITUREID.__CHISTMAS_SOCK__].particles = PARTICLESID.__MUSHROOM1__;
+FURNITURE[FURNITUREID.__TABLE_TREE__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__TABLE0__]));
+FURNITURE[FURNITUREID.__TABLE_TREE__].building.src = "img/day-table-tree.png";
+FURNITURE[FURNITUREID.__DAY_GIFT0__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__CARTON0__]));
+FURNITURE[FURNITUREID.__DAY_GIFT0__].building.src = "img/day-gift0.png";
+FURNITURE[FURNITUREID.__DAY_GIFT0__].detail = new Detail("", "", -1, []);
+FURNITURE[FURNITUREID.__DAY_GIFT0__].usable = 1;
+FURNITURE[FURNITUREID.__DAY_GIFT0__].loot = [
+    [IID.__ELF_HAT__, 1, 0.03],
+    [IID.__CHRISTMAS_HAT__, 1, 0.005],
+    [IID.__GINGERBREAD_MAN__, 1, 0.1],
+    [IID.__DEER_HAT__, 1, 0.005],
+    [IID.__SNOWMAN_HAT__, 1, 0.005],
+    [IID.__CHRISTMAS_CAKE__, 1, 0.1],
+    [IID.__SUGAR_CAN_BOW__, 1, 0.05],
+    [IID.__SUGAR_CAN__, 1, 0.005],
+    [IID.__HAL_BOT__, 1, 0.008],
+    [IID.__LAPABOT_REPAIR__, 1, 0.01],
+    [IID.__GHOUL_DRUG__, 1, 0.003],
+    [IID.__GASOLINE__, 1, 0.006],
+    [IID.__GRENADE__, 1, 0.005],
+    [IID.__DYNAMITE__, 1, 0.005],
+    [IID.__EXTRACTOR__, 1, 0.003]
+];
+FURNITURE[FURNITUREID.__DAY_GIFT0__].particles = PARTICLESID.__GOLD__;
+FURNITURE[FURNITUREID.__DAY_GIFT1__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__DAY_GIFT0__]));
+FURNITURE[FURNITUREID.__DAY_GIFT1__].building.src = "img/day-gift1.png";
+FURNITURE[FURNITUREID.__DAY_GIFT1__].loot = [
+    [IID.__CHRISTMAS_HAT__, 1, 0.01],
+    [IID.__GINGERBREAD_MAN__, 1, 0.02],
+    [IID.__DEER_HAT__, 1, 0.01],
+    [IID.__SNOWMAN_HAT__, 1, 0.01],
+    [IID.__CHRISTMAS_CAKE__, 1, 0.02],
+    [IID.__SUGAR_CAN_BOW__, 1, 0.02],
+    [IID.__SUGAR_CAN__, 1, 0.01],
+    [IID.__HAL_BOT__, 1, 0.01],
+    [IID.__LAPABOT_REPAIR__, 1, 0.012],
+    [IID.__TESLA_BOT__, 1, 0.005],
+    [IID.__LAPADONE__, 1, 0.01],
+    [IID.__GHOUL_DRUG__, 1, 0.014],
+    [IID.__GRENADE__, 2, 0.01],
+    [IID.__DYNAMITE__, 1, 0.01],
+    [IID.__SEED_GHOUL__, 3, 0.03],
+    [IID.__EXTRACTOR__, 1, 0.01],
+    [IID.__GASOLINE__, 2, 0.012],
+    [IID.__ARMOR_TESLA_2__, 1, 0.005],
+    [IID.__ARMOR_PHYSIC_3__, 1, 0.005],
+    [IID.__ARMOR_FIRE_3__, 1, 0.005]
+];
+FURNITURE[FURNITUREID.__DAY_GIFT2__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__DAY_GIFT0__]));
+FURNITURE[FURNITUREID.__DAY_GIFT2__].building.src = "img/day-gift2.png";
+FURNITURE[FURNITUREID.__DAY_GIFT2__].particles = PARTICLESID.__TOILET__;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__BAREL0__]));
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].building.src = "img/day-christmas-tree.png";
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].explosion = 0;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].collision = 2;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].radius = 60;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].detail = new Detail("", "", -1, [
+    [IID.__WOOD__, 16],
+    [IID.__SMALL_WIRE__, 6]
+]);
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].usable = 0;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].zid = 1;
+FURNITURE[FURNITUREID.__CHRISTMAS_TREE__].particles = PARTICLESID.__GARBAGE0__;
+FURNITURE[FURNITUREID.__DAY_GIFT3__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__DAY_GIFT0__]));
+FURNITURE[FURNITUREID.__DAY_GIFT3__].building.src = "img/day-gift3.png";
+FURNITURE[FURNITUREID.__DAY_GIFT3__].width = [70, 70, 70, 70];
+FURNITURE[FURNITUREID.__DAY_GIFT3__].height = [70, 70, 70, 70];
+FURNITURE[FURNITUREID.__DAY_GIFT3__]._x = [0, 30, 30, 0];
+FURNITURE[FURNITUREID.__DAY_GIFT3__]._y = [0, 0, 30, 30];
+FURNITURE[FURNITUREID.__DAY_GIFT4__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__DAY_GIFT0__]));
+FURNITURE[FURNITUREID.__DAY_GIFT4__].building.src = "img/day-gift4.png";
+FURNITURE[FURNITUREID.__DAY_GIFT4__].width = [80, 80, 80, 80];
+FURNITURE[FURNITUREID.__DAY_GIFT4__].height = [80, 80, 80, 80];
+FURNITURE[FURNITUREID.__DAY_GIFT4__]._x = [0, 20, 20, 0];
+FURNITURE[FURNITUREID.__DAY_GIFT4__]._y = [0, 0, 20, 20];
+FURNITURE[FURNITUREID.__DAY_GIFT4__].particles = PARTICLESID.__MUSHROOM1__;
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__] = JSON.parse(JSON.stringify(FURNITURE[FURNITUREID.__SOFA0__]));
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__].building.src = "img/day-plush-devaster.png";
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__].width = [50, 70, 50, 70];
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__].height = [70, 50, 70, 50];
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__]._x = [25, 30, 25, 0];
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__]._y = [0, 25, 30, 25];
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__].detail = new Detail("", "", -1, [
+    [IID.__LEATHER_BOAR__, 8],
+    [IID.__ANIMAL_FAT__, 8]
+]);
+FURNITURE[FURNITUREID.__PLUSH__DEVASTER__].particles = PARTICLESID.__MUSHROOM1__;
 var LOOT = [{
     id: LOOTID.__SMALL_WOOD__,
     img: {
@@ -33389,7 +34126,147 @@ var LOOT = [{
     amount: 1,
     scale: 0.8,
     angle: 0
-  }];
+  }, {
+    id: LOOTID.__GINGERBREAD_WALL__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-gingerbread-wall.png",
+    idItem: IID.__GINGERBREAD_WALL__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__GINGERBREAD_DOOR__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-gingerbread-door.png",
+    idItem: IID.__GINGERBREAD_DOOR__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__GINGERBREAD_CABLE_WALL__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-cable-gingerbread-wall.png",
+    idItem: IID.__GINGERBREAD_CABLE_WALL__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__GINGERBREAD_AUTO_DOOR__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-gingerbread-automatic-door.png",
+    idItem: IID.__GINGERBREAD_AUTO_DOOR__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__CHRISTMAS_HAT__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-christmas-hat.png",
+    idItem: IID.__CHRISTMAS_HAT__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__DEER_HAT__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-deer-hat.png",
+    idItem: IID.__DEER_HAT__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__SNOWMAN_HAT__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-snowman-hat.png",
+    idItem: IID.__SNOWMAN_HAT__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__CHRISTMAS_CAKE__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-christmas-cake.png",
+    idItem: IID.__CHRISTMAS_CAKE__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__ROTTEN_CHRISTMAS_CAKE__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-rotten-christmas-cake.png",
+    idItem: IID.__ROTTEN_CHRISTMAS_CAKE__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__GINGERBREAD_MAN__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-gingerbread-man.png",
+    idItem: IID.__GINGERBREAD_MAN__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__ROTTEN_GINGERBREAD_MAN__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-rotten-gingerbread-man.png",
+    idItem: IID.__ROTTEN_GINGERBREAD_MAN__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__ELF_HAT__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-elf-hat.png",
+    idItem: IID.__ELF_HAT__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__SUGAR_CAN__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-sugar-can.png",
+    idItem: IID.__SUGAR_CAN__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}, {
+    id: LOOTID.__SUGAR_CAN_BOW__,
+    img: {
+        isLoaded: 0
+    },
+    src: "img/day-ground-sugar-can-bow.png",
+    idItem: IID.__SUGAR_CAN_BOW__,
+    amount: 1,
+    scale: 0.8,
+    angle: 0
+}];
 var COUNTER = 0;
 
 var RESID = {
@@ -34135,7 +35012,7 @@ RESOURCES[RESID.BOAR] = {
             img: {
                 isLoaded: 0
             },
-            src: "img/day-boar-dead.png"
+            src: "img/day-boar-dead-christmas.png"
         },
         particlesDist: 70,
         particle: 5,
@@ -34162,7 +35039,7 @@ RESOURCES[RESID.DEER] = {
             img: {
                 isLoaded: 0
             },
-            src: "img/day-deer-dead.png"
+            src: "img/day-deer-dead-christmas.png"
         },
         particlesDist: 73,
         particle: 5,
@@ -34498,6 +35375,9 @@ var HOUSEID = {
     __HOUSE7__:     COUNTER++,
     __HOUSE8__:     COUNTER++,
     __HOUSE9__:     COUNTER++,
+    __CHRISTMAS_HOUSE1__: COUNTER++,
+    __CHRISTMAS_HOUSE2__: COUNTER++,
+    __CHRISTMAS_HOUSE3__: COUNTER++,
     __CITY0__:      COUNTER++,
     __BUNKER0__:    COUNTER++
 };
@@ -34709,6 +35589,50 @@ try {
             V: -1,
             r: 0
         };
+
+        _GW = {
+            V: 0,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWWF = {
+            V: IID.__WOOD_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWLF = {
+            V: IID.__WOODLIGHT_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWSF = {
+            V: IID.__STONE_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWTF = {
+            V: IID.__TILING_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWGF = {
+            V: IID.__GOLD_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+        _GWRF = {
+            V: IID.__RED_FLOOR__,
+            b: IID.__GINGERBREAD_WALL__,
+            W: -1,
+            r: 0
+        };
+
         HOUSE[HOUSEID.__HOUSE0__] = {
             width: 0,
             height: 0,
@@ -42321,6 +43245,1538 @@ try {
                 [_EMP, _EMP, _EMP, _EMP, _SC, _SC, _SC, _EMP, _EMP, _EMP, _EMP, _SC, _SC, _SC, _SC, _SC]
             ]
         };
+        HOUSE[HOUSEID.__CHRISTMAS_HOUSE1__] = {
+            width: 0,
+            height: 0,
+            radiation: 0,
+            building: [
+                [_EMP],
+                [_EMP, _EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 71,
+                    W: 56,
+                    r: 0
+                }, {
+                        V: 0,
+                        b: 71,
+                        W: 56,
+                        r: 0
+                    }],
+                [_EMP, _GWWF, _GWWF, _GWWF, {
+                    V: 62,
+                    b: 162,
+                    W: -1,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWLF, _GWWF, _GWWF, _GWWF, _GWLF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 43,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, _GF, _GF, {
+                        V: 0,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, {
+                        V: 0,
+                        b: 71,
+                        W: 43,
+                        r: 0
+                    }, _GWWF, {
+                        V: 67,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, {
+                        V: 67,
+                        b: 71,
+                        W: 58,
+                        r: 3
+                    }, _LF, _LF, _LF, _LF, _LF, _LF, _LF, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 49,
+                        r: 0
+                    }, _WF],
+                [_EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 54,
+                    r: 2
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 2
+                    }, _GF, _GF, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 2
+                    }, _GWWF, _RF, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 44,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 3
+                    }, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 42,
+                        r: 1
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 51,
+                        r: 3
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 57,
+                        r: 3
+                    }, _WF],
+                [_EMP, _GWWF, _WF, _WF, _GF, _GF, _WF, _WF, {
+                    V: 154,
+                    b: 162,
+                    W: -1,
+                    r: 1
+                }, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 57,
+                        r: 2
+                    }, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 48,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 50,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 44,
+                        r: 2
+                    }, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 51,
+                        r: 3
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 50,
+                        r: 2
+                    }, _WF],
+                [_EMP, _GWWF, _WF, _WF, {
+                    V: 154,
+                    b: 71,
+                    W: 52,
+                    r: 0
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, _WF, _WF, _GWWF, _RF, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 49,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 46,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 48,
+                        r: 0
+                    }, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 42,
+                        r: 1
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 51,
+                        r: 3
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 57,
+                        r: 3
+                    }, _WF],
+                [_EMP, _GWWF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 51,
+                    r: 3
+                }, _GF, _GF, {
+                        V: 62,
+                        b: 71,
+                        W: 51,
+                        r: 1
+                    }, _WF, _GWWF, {
+                        V: 67,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _LF, _LF, _LF, _LF, _LF, _LF, _LF, _LF, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _WF, _WF, _WF],
+                [_EMP, _GWWF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 53,
+                    r: 3
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 60,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 60,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 53,
+                        r: 1
+                    }, _WF, _GWWF, _GWWF, _GWWF, _GWWF, {
+                        V: 67,
+                        b: 164,
+                        W: -1,
+                        r: 0
+                    }, _GWLF, {
+                        V: 67,
+                        b: 144,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 67,
+                        b: 144,
+                        W: -1,
+                        r: 3
+                    }, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _GWWF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 51,
+                    r: 3
+                }, _GF, _GF, {
+                        V: 62,
+                        b: 71,
+                        W: 51,
+                        r: 1
+                    }, _WF, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 1
+                    }, _WF, _WF, {
+                        V: 62,
+                        b: 140,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, {
+                        V: 62,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 58,
+                        r: 3
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 0
+                    }, _GWWF],
+                [_EMP, _GWWF, _WF, _WF, {
+                    V: 154,
+                    b: 71,
+                    W: 52,
+                    r: 2
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 52,
+                        r: 2
+                    }, _WF, _WF, _GWWF, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 140,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 2
+                    }, _RF, _WF, _WF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 12,
+                    r: 0
+                }, _WF, _GF, _GF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 13,
+                        r: 2
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 3
+                    }, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 52,
+                        r: 2
+                    }, _EMP, _RF, _EMP, {
+                        V: 62,
+                        b: 71,
+                        W: 53,
+                        r: 2
+                    }, _WF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _GWWF, _GWWF, {
+                    V: 62,
+                    b: 162,
+                    W: -1,
+                    r: 2
+                }, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 2
+                    }, _GWWF, _GWWF, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 13,
+                        r: 0
+                    }, _WF, _WF, _GWWF, _GWWF, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, _GWGF, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, _GWWF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 12,
+                        r: 2
+                    }, _GWWF],
+                [_EMP, {
+                    V: 62,
+                    b: 71,
+                    W: 42,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 1
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 56,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 56,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _GWWF, _WF, _WF, _WF, _GWWF, {
+                        V: 154,
+                        b: 71,
+                        W: 45,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 2
+                    }, _GF, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 2
+                    }, _GF, _GWWF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _WF, _WF, _WF, _WF, _WF, _WF, _WF, _GWWF, {
+                    V: 154,
+                    b: 71,
+                    W: 52,
+                    r: 3
+                }, _RF, _EMP, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 45,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _RF, _RF, _GWWF],
+                [_EMP, _WF, _WF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 55,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _WF, _WF, _GWWF, {
+                        V: 154,
+                        b: 71,
+                        W: 53,
+                        r: 3
+                    }, _RF, _EMP, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 141,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _RF, _RF, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, {
+                    V: 154,
+                    b: 71,
+                    W: 52,
+                    r: 3
+                }, _RF, _EMP, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 45,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 55,
+                        r: 0
+                    }, _RF, _RF, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, _WF, _WF, _WF, _GWWF, {
+                    V: 154,
+                    b: 71,
+                    W: 45,
+                    r: 2
+                }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 0
+                    }, _GF, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 0
+                    }, _GF, _GWWF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 58,
+                    r: 3
+                }, _WF, _WF, _GWWF, _GWWF, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 2
+                    }, _GWGF, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 2
+                    }, _GWWF, _GWWF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 12,
+                        r: 2
+                    }, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 42,
+                    r: 3
+                }, _WF, _WF, _WF, _WF, _EMP, _RF, _EMP, _WF, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 13,
+                        r: 2
+                    }, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, _WF, _WF, _WF, _WF, _WF, _RF, _RF, _RF, _WF, _WF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 59,
+                    r: 0
+                }, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 2
+                    }, _WF, {
+                        V: 154,
+                        b: 71,
+                        W: 52,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 49,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 52,
+                        r: 2
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 2
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 43,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, _GWWF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF]
+            ]
+        };
+        HOUSE[HOUSEID.__CHRISTMAS_HOUSE2__] = {
+            width: 0,
+            height: 0,
+            radiation: 0,
+            building: [
+                [_EMP],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF],
+                [_EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 142,
+                    W: -1,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 146,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 56,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 146,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 62,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 0,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }],
+                [_EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 140,
+                    W: -1,
+                    r: 0
+                }, _WF, {
+                        V: 154,
+                        b: 71,
+                        W: 44,
+                        r: 3
+                    }, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 3
+                    }, _WF, {
+                        V: 0,
+                        b: 140,
+                        W: -1,
+                        r: 2
+                    }],
+                [_RF, _RF, _RF, {
+                    V: 154,
+                    b: 140,
+                    W: -1,
+                    r: 0
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 56,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 48,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 50,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 46,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 56,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 2
+                    }, _RF, _RF, _RF],
+                [_EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 140,
+                    W: -1,
+                    r: 0
+                }, _WF, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 48,
+                        r: 0
+                    }, _RF, _WF, {
+                        V: 0,
+                        b: 140,
+                        W: -1,
+                        r: 2
+                    }],
+                [_EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 142,
+                    W: -1,
+                    r: 3
+                }, {
+                        V: 62,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, _WF, {
+                        V: 154,
+                        b: 71,
+                        W: 56,
+                        r: 0
+                    }, _WF, {
+                        V: 62,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 0,
+                        b: 142,
+                        W: -1,
+                        r: 2
+                    }],
+                [_EMP, _EMP, _EMP, _EMP, {
+                    V: 0,
+                    b: 142,
+                    W: -1,
+                    r: 3
+                }, {
+                        V: 0,
+                        b: 140,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 140,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 0,
+                        b: 140,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 0,
+                        b: 142,
+                        W: -1,
+                        r: 2
+                    }],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _EMP, _RF]
+            ]
+        };
+        HOUSE[HOUSEID.__CHRISTMAS_HOUSE3__] = {
+            width: 0,
+            height: 0,
+            radiation: 0,
+            building: [
+                [_EMP],
+                [_EMP, _EMP, _EMP, _EMP, _EMP, _RF, _RF],
+                [_EMP, _EMP, _WF, _WF, _WF, _RF, _RF, _WF, _WF, _WF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _EMP, _WF, _WF, _WF, _RF, _RF, _WF, _WF, _WF, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 59,
+                    r: 3
+                }, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, _WF, _RF, _RF, _RF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _GWWF],
+                [_EMP, _EMP, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 42,
+                    r: 2
+                }, {
+                        V: 0,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 55,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 55,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 2
+                    }, _WF, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 47,
+                        r: 0
+                    }, _WF, _WF, _WF, _WF, _RF, _RF, _RF, _WF, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 48,
+                        r: 1
+                    }, _GWWF],
+                [_EMP, _GWWF, _GWWF, _GWWF, _GWWF, {
+                    V: 62,
+                    b: 162,
+                    W: -1,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, _GWWF, _GWWF, _GWWF, _WF, _WF, _WF, _WF, _WF, _RF, _RF, _RF, _WF, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 43,
+                        r: 1
+                    }, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 59,
+                    r: 3
+                }, {
+                        V: 0,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, _WF, _GF, _GF, {
+                        V: 62,
+                        b: 71,
+                        W: 58,
+                        r: 1
+                    }, {
+                        V: 0,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _GWWF, _WF, _WF, _WF, _GWGF, _GWGF, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 164,
+                        W: -1,
+                        r: 0
+                    }, _GW, _GWGF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _WF, _WF, _WF, _GF, _GF, _WF, _WF, _WF, _GWWF, _WF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 53,
+                    r: 1
+                }, _GWGF, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 141,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 47,
+                        r: 1
+                    }, _GWGF, {
+                        V: 62,
+                        b: 71,
+                        W: 53,
+                        r: 3
+                    }, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 57,
+                    r: 1
+                }, _WF, _GF, _GF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 57,
+                        r: 1
+                    }, _WF, _GWWF, _RF, _RF, _EMP, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 3
+                    }, _EMP, _RF, _RF, _GWWF],
+                [_EMP, _GWWF, _WF, _WF, _WF, {
+                    V: 154,
+                    b: 71,
+                    W: 52,
+                    r: 0
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, _WF, _WF, _WF, _GWWF, _RF, _RF, _RF, _GWGF, _GF, {
+                        V: 154,
+                        b: 71,
+                        W: 45,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 71,
+                        W: 45,
+                        r: 0
+                    }, _GF, _GWGF, _RF, _RF, _RF, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 49,
+                    r: 3
+                }, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 51,
+                        r: 3
+                    }, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 51,
+                        r: 1
+                    }, _RF, _WF, _GWWF, _RF, _RF, _RF, _GWGF, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 148,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }, _GWGF, _RF, _RF, _RF, _GWWF],
+                [_EMP, _GWWF, _WF, _RF, _RF, {
+                    V: 154,
+                    b: 71,
+                    W: 60,
+                    r: 0
+                }, {
+                        V: 154,
+                        b: 71,
+                        W: 60,
+                        r: 2
+                    }, _RF, _RF, _WF, {
+                        V: 62,
+                        b: 164,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }, _WF, _EMP, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }, {
+                        V: 154,
+                        b: 147,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 142,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 1
+                    }, _EMP, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 44,
+                        r: 1
+                    }, _GWWF],
+                [_EMP, _GWWF, _WF, _RF, {
+                    V: 154,
+                    b: 71,
+                    W: 51,
+                    r: 3
+                }, _RF, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 51,
+                        r: 1
+                    }, _RF, _WF, {
+                        V: 62,
+                        b: 164,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 143,
+                        W: -1,
+                        r: 1
+                    }, _WF, _WF, _GWGF, _GWGF, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, {
+                        V: 154,
+                        b: 163,
+                        W: -1,
+                        r: 2
+                    }, _GWGF, _GWGF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _WF, _WF, _WF, _WF, _WF, _WF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 14,
+                    r: 1
+                }, _GWWF, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, _EMP, _EMP, _EMP, {
+                        V: 62,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 52,
+                        r: 0
+                    }, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _GWWF, _GWWF, _GWWF, {
+                    V: 62,
+                    b: 71,
+                    W: 54,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 54,
+                        r: 0
+                    }, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 142,
+                        W: -1,
+                        r: 1
+                    }, _WF, _WF, _RF, _RF, _RF, _WF, _WF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 67,
+                    b: 71,
+                    W: 59,
+                    r: 1
+                }, _LF, _LF, _WF, _WF, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 46,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 2
+                    }, _GWWF, _GWWF, {
+                        V: 62,
+                        b: 163,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _RF, {
+                        V: 154,
+                        b: 71,
+                        W: 53,
+                        r: 2
+                    }, _RF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 43,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 49,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 3
+                    }, _GWWF],
+                [_EMP, _GWWF, _LF, _LF, _LF, _WF, _WF, _WF, _WF, _WF, _WF, {
+                    V: 62,
+                    b: 144,
+                    W: -1,
+                    r: 2
+                }, {
+                        V: 62,
+                        b: 163,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 146,
+                        W: -1,
+                        r: 0
+                    }, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 67,
+                    b: 71,
+                    W: 42,
+                    r: 3
+                }, _LF, {
+                        V: 67,
+                        b: 71,
+                        W: 8,
+                        r: 1
+                    }, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 58,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 44,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 49,
+                        r: 2
+                    }, _WF, {
+                        V: 62,
+                        b: 144,
+                        W: -1,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 163,
+                        W: -1,
+                        r: 3
+                    }, {
+                        V: 62,
+                        b: 147,
+                        W: -1,
+                        r: 1
+                    }, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 67,
+                    b: 71,
+                    W: 43,
+                    r: 3
+                }, _LF, {
+                        V: 67,
+                        b: 71,
+                        W: 14,
+                        r: 1
+                    }, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 47,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 46,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 50,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 48,
+                        r: 3
+                    }, _WF, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _GWWF, _LF, _LF, _LF, _WF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 48,
+                    r: 1
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 47,
+                        r: 1
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 44,
+                        r: 2
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 47,
+                        r: 3
+                    }, _GWWF],
+                [_EMP, _GWWF, {
+                    V: 67,
+                    b: 71,
+                    W: 59,
+                    r: 1
+                }, {
+                        V: 67,
+                        b: 71,
+                        W: 15,
+                        r: 2
+                    }, _LF, {
+                        V: 62,
+                        b: 71,
+                        W: 58,
+                        r: 3
+                    }, _WF, _WF, _WF, _WF, _WF, _GWWF],
+                [_EMP, _GWWF, _GWWF, _GWWF, _GWWF, _GWWF, {
+                    V: 62,
+                    b: 162,
+                    W: -1,
+                    r: 2
+                }, {
+                        V: 62,
+                        b: 162,
+                        W: -1,
+                        r: 2
+                    }, _GWWF, _GWWF, _GWWF, _GWWF],
+                [_EMP, _EMP, _EMP, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 59,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, _WF, _WF, {
+                        V: 62,
+                        b: 71,
+                        W: 42,
+                        r: 0
+                    }, {
+                        V: 62,
+                        b: 71,
+                        W: 59,
+                        r: 0
+                    }, _WF],
+                [_EMP, _EMP, _EMP, _WF, _WF, _WF, _WF, _WF, _WF, _WF, _WF],
+                [_EMP, _EMP, _EMP, _WF, _WF, _WF, {
+                    V: 62,
+                    b: 71,
+                    W: 56,
+                    r: 0
+                }, {
+                        V: 62,
+                        b: 71,
+                        W: 56,
+                        r: 0
+                    }, _WF, _WF, _WF]
+            ]
+        };
     }
 } catch (error) {};
 for (var i = 0; i < HOUSE.length; i++) {
@@ -42328,7 +44784,7 @@ for (var i = 0; i < HOUSE.length; i++) {
     var housePlan = HOUSE[i].building;
     house.height = housePlan.length;
     for (var j = 0; j < housePlan.length; j++)
-        house.width = window.Math.max(housePlan[j].length, house.width);
+        house.width = Math.max(housePlan[j].length, house.width);
 }
 
 var AREASTOITEM = [];
@@ -43712,7 +46168,7 @@ AI[AIID.__LAPABOT_REPAIR__] = {
         angle: 0,
         x: 28,
         y: -50,
-        src: "img/day-lapabot-left-arm.png",
+        src: "img/day-lapabot-left-arm-christmas.png",
         img: {
             isLoaded: 0
         }
@@ -43721,13 +46177,13 @@ AI[AIID.__LAPABOT_REPAIR__] = {
         angle: 0,
         x: 28,
         y: 50,
-        src: "img/day-lapabot-right-arm.png",
+        src: "img/day-lapabot-right-arm-christmas.png",
         img: {
             isLoaded: 0
         }
     },
     head: {
-        src: "img/day-lapabot.png",
+        src: "img/day-lapabot-christmas.png",
         img: {
             isLoaded: 0
         }
@@ -43794,7 +46250,7 @@ AI[AIID.__HAL_BOT__] = {
         }
     },
     head: {
-        src: "img/day-hal-bot.png",
+        src: "img/day-hal-bot-christmas.png",
         img: {
             isLoaded: 0
         }
@@ -43861,7 +46317,7 @@ AI[AIID.__TESLA_BOT__] = {
         }
     },
     head: {
-        src: "img/day-tesla-bot.png",
+        src: "img/day-tesla-bot-christmas.png",
         img: {
             isLoaded: 0
         }
@@ -43930,7 +46386,7 @@ try {
                     item.score += _item.score * recipe[j][1];
                     recipe[j][2] = _item.loot;
                 }
-                item.score = window.Math.floor(item.score / 4);
+                item.score = Math.floor(item.score / 4);
             }
         }
         for (var i = 0; i < FURNITURE.length; i++) {
@@ -43943,7 +46399,7 @@ try {
                 item.score += _item.score * recipe[j][1];
                 recipe[j][2] = _item.loot;
             }
-            item.score = window.Math.floor(item.score / 4);
+            item.score = Math.floor(item.score / 4);
         }
     }
 } catch (error) {
@@ -44002,7 +46458,7 @@ try {
 var AudioManager = (function() {
     var wwwvv = [237225, 303931, 166687, 229213, 217292, 205860, 182041, 273065];
     var wMw = [];
-    var WvwmM = window.Math.floor(window.Math.random() * wwwvv.length);
+    var WvwmM = Math.floor(Math.random() * wwwvv.length);
     var mvnmN = 0;
     var mWWVV = 0;
     var vmwnm = 0;
@@ -44101,7 +46557,7 @@ var AudioManager = (function() {
                 AudioUtils.fadeSound(AudioUtils.audio.geiger, 250, distance);
                 NNwwM = AudioManager.geiger;
             }
-            VNWVM = window.Math.max(0, VNWVM - delta);
+            VNWVM = Math.max(0, VNWVM - delta);
         }
         if ((mvnmN === 0) && (mWWVV === 1)) {
             AudioUtils.fadeSound(wMw[WvwmM], 5000, -musicVolume);
@@ -44109,7 +46565,7 @@ var AudioManager = (function() {
             mvnmN = wwwvv[WvwmM] - 5000;
             AudioUtils.fadeSound(wMw[WvwmM], 5000, musicVolume);
         }
-        mvnmN = window.Math.max(0, mvnmN - delta);
+        mvnmN = Math.max(0, mvnmN - delta);
     };
 
     function quitGame() {
@@ -44189,7 +46645,7 @@ function reloadIframe() {
 };
 reloadIframe();
 
-var versionInf = ["", ""];
+var versionInf = [30, 2107];
 try {
     debugMode;
 } catch (error) {
